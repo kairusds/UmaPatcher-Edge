@@ -37,7 +37,7 @@ import java.io.File
 import java.io.IOException
 import java.net.URL
 
-private const val LIBS_REPO_PATH = "Hachimi-Hachimi/Hachimi"
+private const val LIBS_REPO_PATH = "kairusds/Hachimi-Edge"
 
 private const val MOD_ARM64_LIB_NAME = "libmain-arm64-v8a.so"
 private const val APK_ARM64_LIB_DIR = "lib/arm64-v8a"
