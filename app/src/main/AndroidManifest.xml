@@ -18,7 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="ウマPatcher"
+            android:label="ウマPatcher (E)"
             android:theme="@style/Theme.UmaPatcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
