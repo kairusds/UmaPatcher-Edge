@@ -27,6 +27,7 @@ import com.leadrdrk.umapatcher.core.getPrefValue
 import com.leadrdrk.umapatcher.ui.component.BooleanOption
 import com.leadrdrk.umapatcher.ui.component.OptionBase
 import com.leadrdrk.umapatcher.ui.component.TopBar
+import com.leadrdrk.umapatcher.ui.component.rememberDataStoreStringState
 import com.leadrdrk.umapatcher.utils.ksFile
 import com.leadrdrk.umapatcher.utils.showToast
 import com.ramcosta.composedestinations.annotation.Destination
@@ -38,6 +39,11 @@ fun SettingsScreen() {
     val checkForUpdates = remember { mutableStateOf(false) }
     val appLibsVersion = remember { mutableStateOf("") }
     var configRead by remember { mutableStateOf(false) }
+
+    val repoState = rememberDataStoreStringState(
+        key = PrefKey.HACHIMI_REPO,
+        defaultValue = defaultValues[PrefKey.HACHIMI_REPO] as String
+    )
 
     val exportKsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
@@ -121,6 +127,12 @@ fun SettingsScreen() {
                 title = stringResource(R.string.check_for_updates),
                 desc = stringResource(R.string.check_for_updates_desc),
                 state = checkForUpdates
+            )
+
+            StringOption(
+                title = stringResource(R.string.hachimi_repo),
+                state = repoState,
+                placeholder = defaultValues[PrefKey.HACHIMI_REPO] as String
             )
 
             OptionBase(
