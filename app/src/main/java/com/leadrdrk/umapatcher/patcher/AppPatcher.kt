@@ -597,7 +597,7 @@ class AppPatcher(
         if (!libsDir.exists()) libsDir.mkdir() || return null
 
         val currentVer = context.getPrefValue(PrefKey.APP_LIBS_VERSION) as String?
-        val modRepo = context.getPrefValue(PrefKey.HACHIMI_REPO) as String?
+        val modRepo = context.getPrefValue(PrefKey.HACHIMI_REPO) as String
 
         // Try syncing the libraries
         try {
