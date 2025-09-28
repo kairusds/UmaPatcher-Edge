@@ -16,6 +16,7 @@
     <string name="tap_to_select_file">Nhấn vào đây để chọn file</string>
     <string name="app_patcher_supported_files">Hỗ trợ: APK / Split APKs, XAPK</string>
     <string name="check_for_updates_desc">Thỉnh thoảng kiểm tra cập nhật khi ứng dụng được mở.</string>
+    <string name="hachimi_repo">Kho lưu trữ Hachimi</string>
     <string name="export_signing_key">Xuất khóa ký</string>
     <string name="export_signing_key_desc">Xuất keystore BKS được sử dụng để ký các file APK.</string>
     <string name="import_signing_key">Nhập khóa ký</string>

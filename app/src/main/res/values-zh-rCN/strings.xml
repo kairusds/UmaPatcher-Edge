@@ -16,6 +16,7 @@
     <string name="tap_to_select_file">点击此处选择文件</string>
     <string name="app_patcher_supported_files">支持的文件：APK / 拆分的 APK，XAPK</string>
     <string name="check_for_updates_desc">应用启动时偶尔检查更新。</string>
+    <string name="hachimi_repo">Hachimi 仓库</string>
     <string name="export_signing_key">导出签名密钥</string>
     <string name="export_signing_key_desc">导出用于签署 APK 文件的 BKS 密钥库。</string>
     <string name="import_signing_key">导入签名密钥</string>
