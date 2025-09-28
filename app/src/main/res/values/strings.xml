@@ -21,6 +21,7 @@
 
     <!-- Settings -->
     <string name="check_for_updates_desc">Occasionally check for updates when the app starts.</string>
+    <string name="hachimi_repo">Hachimi repo</string>
     <string name="export_signing_key">Export signing key</string>
     <string name="export_signing_key_desc">Export the BKS keystore used to sign APK files.</string>
     <string name="import_signing_key">Import signing key</string>

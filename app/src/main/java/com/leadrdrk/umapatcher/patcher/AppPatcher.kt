@@ -37,8 +37,6 @@ import java.io.File
 import java.io.IOException
 import java.net.URL
 
-private const val LIBS_REPO_PATH = "Hachimi-Hachimi/Hachimi"
-
 private const val MOD_ARM64_LIB_NAME = "libmain-arm64-v8a.so"
 private const val APK_ARM64_LIB_DIR = "lib/arm64-v8a"
 private const val APK_ARM64_LIB_PATH = "$APK_ARM64_LIB_DIR/libmain.so"
@@ -599,10 +597,11 @@ class AppPatcher(
         if (!libsDir.exists()) libsDir.mkdir() || return null
 
         val currentVer = context.getPrefValue(PrefKey.APP_LIBS_VERSION) as String?
+        val modRepo = context.getPrefValue(PrefKey.HACHIMI_REPO) as String
 
         // Try syncing the libraries
         try {
-            val releases = GitHubReleases(LIBS_REPO_PATH)
+            val releases = GitHubReleases(modRepo)
             val latest = releases.fetchLatest()
             val tagName = latest["tag_name"] as String
 
