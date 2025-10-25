@@ -21,51 +21,33 @@ import com.leadrdrk.umapatcher.shizuku.IInstallerService;
 
 public class InstallerService extends IInstallerService.Stub {
 
-    private static Object getPackageManager() {
-        try {
-            Class<?> serviceManagerClass = Class.forName("android.os.ServiceManager");
-            Method getServiceMethod = serviceManagerClass.getDeclaredMethod("getService", String.class);
-            IBinder binder = (IBinder) getServiceMethod.invoke(null, "package");
-            Class<?> stubClass = Class.forName("android.content.pm.IPackageManager$Stub");
-            Method asInterfaceMethod = stubClass.getDeclaredMethod("asInterface", IBinder.class);
-            return asInterfaceMethod.invoke(null, binder);
-        } catch (Exception e) {
-            return null;
-        }
+    private static Object getPackageManager() throws Exception {
+        Class<?> serviceManagerClass = Class.forName("android.os.ServiceManager");
+        Method getServiceMethod = serviceManagerClass.getDeclaredMethod("getService", String.class);
+        IBinder binder = (IBinder) getServiceMethod.invoke(null, "package");
+        Class<?> stubClass = Class.forName("android.content.pm.IPackageManager$Stub");
+        Method asInterfaceMethod = stubClass.getDeclaredMethod("asInterface", IBinder.class);
+        return asInterfaceMethod.invoke(null, binder);
+    }
+
+    private static Object getPackageInstaller(Object iPackageManager) throws Exception {
+        Method getPackageInstallerMethod = iPackageManager.getClass().getMethod("getPackageInstaller");
+        return getPackageInstallerMethod.invoke(iPackageManager);
     }
 
     @Override
     public String install(List<String> apkPaths) throws RemoteException {
-        Object iPackageManager = getPackageManager();
-        if (iPackageManager == null) {
-            return "Failed to get PackageManager service.";
-        }
+        Object iPackageManager;
+        Object iPackageInstaller;
 
-        PackageInstaller packageInstaller;
         try {
-            Method getPackageInstallerMethod = iPackageManager.getClass().getMethod("getPackageInstaller");
-            Object iPackageInstaller = getPackageInstallerMethod.invoke(iPackageManager);
-            IBinder installerBinder = (IBinder) iPackageInstaller.getClass().getMethod("asBinder").invoke(iPackageInstaller);
-            Class<?> packageInstallerClass = Class.forName("android.content.pm.PackageInstaller");
+            iPackageManager = getPackageManager();
+            if(iPackageManager == null) return "Failed to get PackageManager service.";
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Constructor constructor = packageInstallerClass.getConstructor(
-                        Class.forName("android.content.pm.IPackageInstaller"),
-                        String.class,
-                        String.class,
-                        int.class
-                );
-                packageInstaller = (PackageInstaller) constructor.newInstance(iPackageInstaller, "com.android.shell", null, 0);
-            }else {
-                Constructor constructor = packageInstallerClass.getConstructor(
-                        Class.forName("android.content.pm.IPackageInstaller"),
-                        String.class,
-                        int.class
-                );
-                packageInstaller = (PackageInstaller) constructor.newInstance(iPackageInstaller, "com.android.shell", 0);
-            }
+            iPackageInstaller = getPackageInstaller(iPackageManager);
+            if(iPackageInstaller == null) return "Failed to get PackageInstaller service.";
         }catch(Exception e) {
-            return "Failed to create PackageInstaller instance: " + e;
+            return "Failed to get system services: " + e.getMessage();
         }
 
         PackageInstaller.Session session = null;
@@ -75,11 +57,49 @@ public class InstallerService extends IInstallerService.Stub {
                 Field installFlags = params.getClass().getDeclaredField("installFlags");
                 installFlags.setAccessible(true);
                 installFlags.setInt(params, 0x00000002 /* INSTALL_REPLACE_EXISTING */);
-            }catch (Exception e) {
-                System.err.println("Failed to set installFlags via reflection: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Failed to set installFlags: " + e.getMessage());
             }
 
-            int sessionId = packageInstaller.createSession(params);
+            String installerPackageName = "com.android.vending";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                try {
+                    Method setPackageSourceMethod = params.getClass().getMethod("setPackageSource", int.class);
+                    setPackageSourceMethod.invoke(params, PackageInstaller.PACKAGE_SOURCE_STORE);
+                }catch (Exception e) {
+                    System.err.println("Failed to set package source: " + e.getMessage());
+                }
+            }
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                params.setInstallerPackageName(installerPackageName);
+            }
+
+            int sessionId;
+            int userId = 0;
+            Class<?> iPackageInstallerClass = iPackageInstaller.getClass();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Method createSessionMethod = iPackageInstallerClass.getMethod("createSession", PackageInstaller.SessionParams.class, String.class, String.class, int.class);
+                sessionId = (int) createSessionMethod.invoke(iPackageInstaller, params, installerPackageName, installerPackageName, userId);
+            } else {
+                Method createSessionMethod = iPackageInstallerClass.getMethod("createSession", PackageInstaller.SessionParams.class, String.class, int.class);
+                sessionId = (int) createSessionMethod.invoke(iPackageInstaller, params, installerPackageName, userId);
+            }
+
+            PackageInstaller packageInstaller;
+            try {
+                IBinder installerBinder = (IBinder) iPackageInstaller.getClass().getMethod("asBinder").invoke(iPackageInstaller);
+                Class<?> packageInstallerClass = Class.forName("android.content.pm.PackageInstaller");
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    Constructor constructor = packageInstallerClass.getConstructor(Class.forName("android.content.pm.IPackageInstaller"), String.class, String.class, int.class);
+                    packageInstaller = (PackageInstaller) constructor.newInstance(iPackageInstaller, "com.android.shell", null, 0);
+                }else {
+                    Constructor constructor = packageInstallerClass.getConstructor(Class.forName("android.content.pm.IPackageInstaller"), String.class, int.class);
+                    packageInstaller = (PackageInstaller) constructor.newInstance(iPackageInstaller, "com.android.shell", 0);
+                }
+            }catch(Exception e) {
+                return "Failed to create public PackageInstaller wrapper: " + e;
+            }
+
             session = packageInstaller.openSession(sessionId);
 
             for(String apkPath : apkPaths) {
