@@ -46,6 +46,15 @@
     <string name="direct_install">Direct install (root required)</string>
     <string name="save_patched_file">Save patched file</string>
     <string name="normal_install">Normal install</string>
+    <string name="shizuku_install">Shizuku install</string>
+    <string name="shizuku_install_available">(Available)</string>
+    <string name="shizuku_install_unavailable">(Unavailable)</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_permission_required">Shizuku permission required</string>
+    <string name="shizuku_permission_info">Please grant the Shizuku permission for the app in order to use the Shizuku installer.</string>
+    <string name="shizuku_unavailable">Shizuku is not available</string>
+    <string name="shizuku_unavailable_info">Shizuku is either not installed or not running. Please install and start Shizuku to use this installer. Would you like to open the download page for Shizuku?</string>
 
     <!-- Patching -->
     <string name="working">Working...</string>
@@ -91,6 +100,16 @@
     <string name="patching_as_split_apks">Patching as split APKs.</string>
     <string name="staging_app">Staging app</string>
     <string name="removing_legacy_files">Removing legacy files</string>
+    <string name="shizuku_moving_files">Moving files for Shizuku</string>
+    <string name="external_cache_unavailable">External cache folder is unavailable.</string>
+    <string name="copy_file_failed">Failed to copy file to %s</string>
+    <string name="shizuku_files_move_failed">Failed to move files for Shizuku: %s</string>
+    <string name="shizuku_starting_service">Starting Shizuku service...</string>
+    <string name="shizuku_installing">Installing with Shizuku...</string>
+    <string name="shizuku_install_success">Shizuku installation successful.</string>
+    <string name="shizuku_install_fail">Shizuku installation failed: %s</string>
+    <string name="shizuku_install_error">Shizuku installation failed with an exception: %s</string>
+    <string name="shizuku_install_fail_unexpected">Service disconnected unexpectedly.</string>
 
     <!-- Other -->
     <string name="cancel">Cancel</string>

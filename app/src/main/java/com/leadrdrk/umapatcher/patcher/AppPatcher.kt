@@ -16,6 +16,8 @@ import com.leadrdrk.umapatcher.core.GitHubReleases
 import com.leadrdrk.umapatcher.core.PrefKey
 import com.leadrdrk.umapatcher.core.dataStore
 import com.leadrdrk.umapatcher.core.getPrefValue
+import com.leadrdrk.umapatcher.shizuku.ShizukuInstaller
+import com.leadrdrk.umapatcher.shizuku.ShizukuState
 import com.leadrdrk.umapatcher.utils.bytesToHex
 import com.leadrdrk.umapatcher.utils.downloadFileAndDigestSHA1
 import com.leadrdrk.umapatcher.utils.fetchJson
@@ -29,10 +31,14 @@ import com.reandroid.archive.ZipEntryMap
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.model.enums.CompressionMethod
 import net.lingala.zip4j.progress.ProgressMonitor
+import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuBinderWrapper
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -67,7 +73,8 @@ private val Context.xapkExtractDir: File
 class AppPatcher(
     private val fileUris: Array<Uri>,
     private val install: Boolean,
-    private val directInstall: Boolean
+    private val directInstall: Boolean,
+    private val shizukuInstall: Boolean
 ): Patcher() {
     override fun run(context: Context): Boolean {
         if (directInstall && !isDirectInstallAllowed(context))
@@ -174,11 +181,16 @@ class AppPatcher(
             if (!patchSplitApks(context, apkFiles))
                 return false
 
-            // Install or save
-            return if (install)
-                installApks(context, apkFiles)
-            else
-                createAndSaveXapk(context, apkFiles)
+            return when {
+                shizukuInstall -> {
+                    val externalFiles = moveToExternalForShizuku(context, apkFiles) ?: return false
+                    val success = installApksShizuku(context, externalFiles)
+                    externalFiles.firstOrNull()?.parentFile?.deleteRecursively()
+                    success
+                }
+                install -> installApks(context, apkFiles)
+                else -> createAndSaveXapk(context, apkFiles)
+            }
         }
         catch (ex: Exception) {
             logException(ex)
@@ -198,16 +210,22 @@ class AppPatcher(
             if (!patchApk(context, zip))
                 return false
 
-            return if (install) {
-                installApks(context, arrayOf(zip.file))
-            }
-            else {
-                val success = saveFile("patched-${System.currentTimeMillis()}.apk", zip.file)
-                log(
-                    if (success) context.getString(R.string.file_saved)
-                    else context.getString(R.string.failed_to_save_file)
-                )
-                success
+            return when {
+                shizukuInstall -> {
+                    val externalFiles = moveToExternalForShizuku(context, arrayOf(zip.file)) ?: return false
+                    val success = installApksShizuku(context, externalFiles)
+                    externalFiles.firstOrNull()?.parentFile?.deleteRecursively()
+                    success
+                }
+                install -> installApks(context, arrayOf(zip.file))
+                else -> {
+                    val success = saveFile("patched-${System.currentTimeMillis()}.apk", zip.file)
+                    log(
+                        if (success) context.getString(R.string.file_saved)
+                        else context.getString(R.string.failed_to_save_file)
+                    )
+                    success
+                }
             }
         }
         catch (ex: Exception) {
@@ -231,10 +249,16 @@ class AppPatcher(
             if (!patchSplitApks(context, files))
                 return false
 
-            return if (install)
-                installApks(context, files)
-            else
-                createAndSaveXapk(context, files)
+            return when {
+                shizukuInstall -> {
+                    val externalFiles = moveToExternalForShizuku(context, files) ?: return false
+                    val success = installApksShizuku(context, externalFiles)
+                    externalFiles.firstOrNull()?.parentFile?.deleteRecursively()
+                    success
+                }
+                install -> installApks(context, files)
+                else -> createAndSaveXapk(context, files)
+            }
         }
         catch (ex: Exception) {
             logException(ex)
@@ -557,6 +581,43 @@ class AppPatcher(
             else R.string.install_failed
         ))
         return success
+    }
+
+    private suspend fun installApksShizuku(context: Context, files: Array<File>): Boolean {
+        if(!ShizukuState.isAvailable.value) {
+            log(context.getString(R.string.shizuku_unavailable))
+            return false
+        }
+        return ShizukuInstaller.install(context, files, this)
+    }
+    
+    private fun moveToExternalForShizuku(context: Context, files: Array<File>): Array<File>? {
+        task = context.getString(R.string.shizuku_moving_files)
+        progress = -1f
+        
+        val externalDir = context.externalCacheDir?.resolve("shizuku") ?: run {
+            log(context.getString(R.string.external_cache_unavailable))
+            return null
+        }
+        externalDir.deleteRecursively()
+        externalDir.mkdirs()
+
+        try {
+            return files.map { originalFile ->
+                val destinationFile = externalDir.resolve(originalFile.name)
+                originalFile.copyTo(destinationFile, overwrite = true)
+                if(!destinationFile.exists()) {
+                    log(context.getString(R.string.copy_file_failed, destinationFile.path))
+                }
+                originalFile.delete()
+                destinationFile
+            }.toTypedArray()
+        } catch (e: Exception) {
+            log(context.getString(R.string.shizuku_files_move_failed, e.message))
+            logException(e)
+            externalDir.deleteRecursively()
+            return null
+        }
     }
 
     private suspend fun createAndSaveXapk(context: Context, files: Array<File>): Boolean {

@@ -224,7 +224,13 @@ fun RadioGroupOption(
     title: String,
     desc: String,
     choices: Array<String>,
-    state: MutableState<Int>
+    state: MutableState<Int>,
+    choiceContent: @Composable (index: Int, text: String) -> Unit = { _, text ->
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
 ) {
     Column(
         modifier = Modifier
@@ -253,10 +259,7 @@ fun RadioGroupOption(
                             onClick = { state.value = i }
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = choice,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        choiceContent(i, choice)
                     }
                 }
             }

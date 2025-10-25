@@ -1,6 +1,7 @@
 package com.leadrdrk.umapatcher
 
 import android.os.Bundle
+import android.content.pm.PackageManager
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -51,12 +52,15 @@ import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultA
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.navigation.popBackStack
 import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
+import rikka.shizuku.Shizuku
 import com.topjohnwu.superuser.Shell
 
 private val rootInitialized = mutableStateOf(false)
 
 class MainActivity : ComponentActivity() {
     companion object {
+        const val SHIZUKU_PERMISSION_REQUEST_CODE = 9975
+        var onShizukuPermissionResult: ((grantResult: Int) -> Unit)? = null
         init {
             Shell.enableVerboseLogging = BuildConfig.DEBUG
             Shell.setDefaultBuilder(Shell.Builder.create()
@@ -65,8 +69,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val shizukuPermissionListener =
+        Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+            if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) {
+                onShizukuPermissionResult?.invoke(grantResult)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Shizuku.addRequestPermissionResultListener(shizukuPermissionListener)
 
         appInit()
 
@@ -77,6 +90,12 @@ class MainActivity : ComponentActivity() {
         }
 
         UpdateChecker.init(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Shizuku.removeRequestPermissionResultListener(shizukuPermissionListener)
+        onShizukuPermissionResult = null
     }
 
     private fun appInit() {

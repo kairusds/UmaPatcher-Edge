@@ -15,10 +15,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 abstract class Patcher(
-    private var onLog: (String) -> Unit = {},
-    private var onProgress: (Float) -> Unit = {},
-    private var onTask: (String) -> Unit = {},
-    private var onSaveFile: (String, File, (Boolean) -> Unit) -> Unit = { _: String, _: File, _: (Boolean) -> Unit -> }
+    var onLog: (String) -> Unit = {},
+    var onProgress: (Float) -> Unit = {},
+    var onTask: (String) -> Unit = {},
+    var onSaveFile: (String, File, (Boolean) -> Unit) -> Unit = { _: String, _: File, _: (Boolean) -> Unit -> }
 ) {
     var progress: Float = 0f
         set(value) {
@@ -56,7 +56,7 @@ abstract class Patcher(
         }
     }
 
-    protected fun log(line: String) {
+    fun log(line: String) {
         onLog(line)
     }
 
@@ -64,7 +64,7 @@ abstract class Patcher(
         lines.forEach(onLog)
     }
 
-    protected fun logException(ex: Exception) {
+    fun logException(ex: Exception) {
         val sw = StringWriter()
         PrintWriter(sw).use {
             ex.printStackTrace(it)

@@ -44,6 +44,7 @@ android {
     buildFeatures {
         compose true
         buildConfig true
+        aidl true
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
@@ -84,6 +85,10 @@ dependencies {
     implementation 'com.android.tools.build:apksig:8.2.2'
     implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
     implementation 'io.github.reandroid:ARSCLib:1.2.4'
+    
+    // Shizuku
+    implementation 'dev.rikka.shizuku:api:13.1.5'
+    implementation 'dev.rikka.shizuku:provider:13.1.5'
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"

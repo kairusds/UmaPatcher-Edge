@@ -84,4 +84,21 @@
     <string name="update_available_desc">Một phiên bản mới đã có sẵn: %s\nBạn có muốn mở trang tải về không?</string>
     <string name="failed_to_check_for_updates">Không thể kiểm tra cập nhật</string>
     <string name="no_updates_available">Không có cập nhật</string>
+    <string name="shizuku_install">Cài đặt Shizuku</string>
+    <string name="shizuku_install_available">(Có sẵn)</string>
+    <string name="shizuku_install_unavailable">(Không có sẵn)</string>    
+    <string name="shizuku_permission_required">Cần có quyền Shizuku</string>
+    <string name="shizuku_permission_info">Vui lòng cấp quyền Shizuku cho ứng dụng để sử dụng trình cài đặt Shizuku.</string>
+    <string name="shizuku_unavailable">Shizuku không có sẵn</string>
+    <string name="shizuku_unavailable_info">Shizuku chưa được cài đặt hoặc chưa chạy. Vui lòng cài đặt và khởi động Shizuku để sử dụng trình cài đặt này. Bạn có muốn mở trang tải xuống Shizuku không?</string>
+    <string name="shizuku_moving_files">Đang di chuyển tệp cho Shizuku</string>
+    <string name="external_cache_unavailable">Thư mục bộ nhớ đệm ngoài không có sẵn.</string>
+    <string name="copy_file_failed">Sao chép tệp vào %s thất bại</string>
+    <string name="shizuku_files_move_failed">Di chuyển tệp cho Shizuku thất bại: %s</string>
+    <string name="shizuku_starting_service">Đang khởi động dịch vụ Shizuku...</string>
+    <string name="shizuku_installing">Đang cài đặt bằng Shizuku...</string>
+    <string name="shizuku_install_success">Cài đặt Shizuku thành công.</string>
+    <string name="shizuku_install_fail">Cài đặt Shizuku thất bại: %s</string>
+    <string name="shizuku_install_error">Cài đặt Shizuku thất bại do một ngoại lệ: %s</string>
+    <string name="shizuku_install_fail_unexpected">Dịch vụ bị ngắt kết nối bất ngờ.</string>
 </resources>

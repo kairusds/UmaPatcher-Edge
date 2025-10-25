@@ -84,4 +84,21 @@
     <string name="apk_files_missing_lib">APK 檔案無效或不完整（缺少本地程式庫）</string>
     <string name="invalid_apk_splits_duplicate">無效的拆分 APK：偵測到另一個 %s APK。</string>
     <string name="apk_splits_missing_base">拆分 APK 中缺少 Base APK。</string>
+    <string name="shizuku_install">Shizuku 安裝</string>
+    <string name="shizuku_install_available">（可用）</string>
+    <string name="shizuku_install_unavailable">（不可用）</string>
+    <string name="shizuku_permission_required">需要 Shizuku 權限</string>
+    <string name="shizuku_permission_info">請授予本應用程式 Shizuku 權限，以便使用 Shizuku 安裝器。</string>
+    <string name="shizuku_unavailable">Shizuku 不可用</string>
+    <string name="shizuku_unavailable_info">Shizuku 未安裝或未運行。請安裝並啟動 Shizuku 以使用此安裝器。是否要打開 Shizuku 的下載頁面？</string>
+    <string name="shizuku_moving_files">正在移動 Shizuku 檔案</string>
+    <string name="external_cache_unavailable">外部快取資料夾不可用。</string>
+    <string name="copy_file_failed">無法將檔案複製到 %s</string>
+    <string name="shizuku_files_move_failed">移動 Shizuku 檔案失敗: %s</string>
+    <string name="shizuku_starting_service">正在啟動 Shizuku 服務...</string>
+    <string name="shizuku_installing">正在使用 Shizuku 安裝...</string>    
+    <string name="shizuku_install_success">Shizuku 安裝成功。</string>
+    <string name="shizuku_install_fail">Shizuku 安裝失敗: %s</string>
+    <string name="shizuku_install_error">Shizuku 安裝因異常而失敗: %s</string>
+    <string name="shizuku_install_fail_unexpected">服務意外斷開連接。</string>
 </resources>
