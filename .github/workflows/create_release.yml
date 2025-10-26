@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v5
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v5
       with:
         distribution: "temurin"
         java-version: 17
@@ -22,10 +22,20 @@ jobs:
       run: chmod +x gradlew
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v5
+
+    - name: Decode release signing key
+      run: |
+        echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 -d > release.keystore
+        echo "RELEASE_KEYSTORE_PATH=$(realpath release.keystore)" >> $GITHUB_ENV
 
     - name: Build with Gradle
       run: ./gradlew build
+      env:
+        SIGNING_KEY_FILE: ${{ env.RELEASE_KEYSTORE_PATH }}
+        SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
     - name: Set app version env var
       run: |

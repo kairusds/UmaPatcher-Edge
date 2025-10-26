@@ -10,10 +10,11 @@ android {
 
     defaultConfig {
         applicationId "com.leadrdrk.umapatcher"
+        applicationIdSuffix ".edge"
         minSdk 24
         targetSdk 34
-        versionCode 8
-        versionName "1.0.2"
+        versionCode 9
+        versionName "1.1.0"
     }
 
     signingConfigs {
@@ -23,14 +24,26 @@ android {
             keyAlias "androiddebugkey"
             keyPassword "android"
         }
+
+        release {
+            storeFile file(System.getenv("SIGNING_KEY_FILE"))
+            storePassword System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
         release {
-            applicationIdSuffix '.edge'
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            shrinkResources false
+            minifyEnabled false
             signingConfig signingConfigs.debug
         }
     }
