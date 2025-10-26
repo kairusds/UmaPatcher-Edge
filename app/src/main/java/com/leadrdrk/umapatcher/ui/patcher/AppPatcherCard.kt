@@ -128,7 +128,7 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
             Button(
                 enabled = isButtonEnabled,
                 onClick = {
-                    if(!isShizukuAvailable) {
+                    if(!isShizukuAvailable && isShizukuOptionSelected) {
                         showShizukuNotAvailableDialog = true
                         return@Button
                     }
