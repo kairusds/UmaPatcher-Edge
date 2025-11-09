@@ -84,7 +84,7 @@
     <string name="update_available_desc">有新版本可用：%s\n要打开下载页面吗？</string>
     <string name="failed_to_check_for_updates">检查更新失败</string>
     <string name="no_updates_available">没有可用更新</string>
-    <string name="shizuku_install">安装 Shizuku</string>
+    <string name="shizuku_install">通过 Shizuku 安装</string>
     <string name="shizuku_install_available">(可用)</string>
     <string name="shizuku_install_unavailable">(不可用)</string>    
     <string name="shizuku_permission_required">需要 Shizuku 权限</string>
