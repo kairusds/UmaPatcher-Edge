@@ -27,7 +27,7 @@ fun deleteRecursive(fileOrDirectory: File, deleteRoot: Boolean = true) {
     if (deleteRoot) fileOrDirectory.delete()
 }
 
-fun downloadFileAndDigestSHA1(url: URL, outputFile: File, onProgress: (Float) -> Unit): ByteArray {
+fun downloadFileAndDigestSHA256(url: URL, outputFile: File, onProgress: (Float) -> Unit): ByteArray {
     val conn = url.openConnection() as HttpURLConnection
     conn.doInput = true
     conn.instanceFollowRedirects = true
@@ -36,15 +36,16 @@ fun downloadFileAndDigestSHA1(url: URL, outputFile: File, onProgress: (Float) ->
     if (conn.responseCode != 200) throw IOException()
     val contentLength = conn.contentLengthLong
 
-    val sha1 = MessageDigest.getInstance("SHA-1")
+    val shaDigest = MessageDigest.getInstance("SHA-256") 
+
     conn.inputStream.use { input ->
         outputFile.outputStream().use { output ->
-            val dataBuffer = ByteArray(1024)
+            val dataBuffer = ByteArray(1024) 
             var totalBytesRead = 0L
             var bytesRead: Int
             while (input.read(dataBuffer, 0, 1024).also { bytesRead = it } != -1) {
                 output.write(dataBuffer, 0, bytesRead)
-                sha1.update(dataBuffer, 0, bytesRead)
+                shaDigest.update(dataBuffer, 0, bytesRead)
 
                 totalBytesRead += bytesRead
                 if (contentLength != -1L) {
@@ -54,7 +55,7 @@ fun downloadFileAndDigestSHA1(url: URL, outputFile: File, onProgress: (Float) ->
         }
     }
 
-    return sha1.digest()
+    return shaDigest.digest() 
 }
 
 private val gson = Gson()

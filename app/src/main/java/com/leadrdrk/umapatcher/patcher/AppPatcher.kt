@@ -19,7 +19,7 @@ import com.leadrdrk.umapatcher.core.getPrefValue
 import com.leadrdrk.umapatcher.shizuku.ShizukuInstaller
 import com.leadrdrk.umapatcher.shizuku.ShizukuState
 import com.leadrdrk.umapatcher.utils.bytesToHex
-import com.leadrdrk.umapatcher.utils.downloadFileAndDigestSHA1
+import com.leadrdrk.umapatcher.utils.downloadFileAndDigestSHA256
 import com.leadrdrk.umapatcher.utils.fetchJson
 import com.leadrdrk.umapatcher.utils.ksFile
 import com.leadrdrk.umapatcher.utils.workDir
@@ -683,13 +683,13 @@ class AppPatcher(
                 getAssetDownloadUrl(assets, MOD_ARM_LIB_NAME) ?:
                 throw RuntimeException("ARM lib asset not found")
             )
-            val sha1Url = URL(
-                getAssetDownloadUrl(assets, "sha1.json") ?:
-                throw RuntimeException("SHA1 hash asset not found")
+            val sha256Url = URL(
+                getAssetDownloadUrl(assets, "sha256.json") ?:
+                throw RuntimeException("SHA256 hash asset not found")
             )
 
-            // First fetch the sha1 json
-            val hashes = fetchJson(sha1Url)
+            // First fetch the sha256 json
+            val hashes = fetchJson(sha256Url)
 
             // Download the libraries to temporary files
             val workDir = context.workDir
@@ -698,18 +698,18 @@ class AppPatcher(
 
             log(context.getString(R.string.downloading_file).format(MOD_ARM64_LIB_NAME))
             progress = -1f
-            val arm64Sha1 = bytesToHex(downloadFileAndDigestSHA1(arm64LibUrl, arm64LibTmp) {
+            val arm64Sha256 = bytesToHex(downloadFileAndDigestSHA256(arm64LibUrl, arm64LibTmp) {
                 progress = it
             })
 
             log(context.getString(R.string.downloading_file).format(MOD_ARM_LIB_NAME))
             progress = -1f
-            val armSha1 = bytesToHex(downloadFileAndDigestSHA1(armLibUrl, armLibTmp) {
+            val armSha256 = bytesToHex(downloadFileAndDigestSHA256(armLibUrl, armLibTmp) {
                 progress = it
             })
 
             // Check their hashes
-            if (arm64Sha1 != hashes[MOD_ARM64_LIB_NAME] || armSha1 != hashes[MOD_ARM_LIB_NAME]) {
+            if (arm64Sha256 != hashes[MOD_ARM64_LIB_NAME] || armSha256 != hashes[MOD_ARM_LIB_NAME]) {
                 log(context.getString(R.string.corrupted_file_abort_download))
                 arm64LibTmp.delete()
                 armLibTmp.delete()
