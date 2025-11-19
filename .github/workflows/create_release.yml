@@ -11,6 +11,8 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
 
     - name: Set up JDK 17
       uses: actions/setup-java@v5
@@ -42,9 +44,48 @@ jobs:
         VERSION_NAME=$(grep -oP 'versionName\s*"\K[^"]+' app/build.gradle)
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
+    - name: Create release notes
+      run: |
+        if ! git rev-parse "$LATEST_TAG" >/dev/null 2>&1; then
+            git tag $LATEST_TAG
+          fi
+
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${LATEST_TAG}^")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+
+          echo "## What's Changed" > CHANGELOG.md
+          COMMIT_HASHES=$(git rev-list --no-merges ${PREVIOUS_TAG}..${LATEST_TAG})
+
+          IFS=$'\n'
+
+          for hash in $COMMIT_HASHES; do
+            subject=$(git show -s --format=%s $hash)
+            body=$(git show -s --format=%b $hash)
+            author=$(git show -s --format=%an $hash)
+            short_hash=$(git show -s --format=%h $hash)
+
+            echo "* **$subject**" >> CHANGELOG.md
+
+            if [ -n "$body" ]; then
+              echo "$body" | while read -r line; do
+                if [ -z "$line" ]; then continue; fi
+                clean_line=$(echo "$line" | sed -E 's/^[ \t]*[-*+][ \t]*//')
+                echo "    * $clean_line" >> CHANGELOG.md
+              done
+            fi
+            echo "    (by @$author in $short_hash)" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          done
+
+          unset IFS
+      env:
+        LATEST_TAG: "v${{ env.VERSION_NAME }}"
+
     - name: Upload binaries to a release
       uses: softprops/action-gh-release@v2
       with:
-        generate_release_notes: true
+        body_path: CHANGELOG.md
         files: app/build/outputs/apk/release/*.apk
         tag_name: "v${{ env.VERSION_NAME }}"
