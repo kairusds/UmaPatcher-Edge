@@ -14,6 +14,7 @@ import com.leadrdrk.umapatcher.R
 import com.leadrdrk.umapatcher.core.GameChecker
 import com.leadrdrk.umapatcher.core.GitHubReleases
 import com.leadrdrk.umapatcher.core.PrefKey
+import com.leadrdrk.umapatcher.core.PluginManager
 import com.leadrdrk.umapatcher.core.dataStore
 import com.leadrdrk.umapatcher.core.getPrefValue
 import com.leadrdrk.umapatcher.shizuku.ShizukuInstaller
@@ -453,6 +454,7 @@ class AppPatcher(
                 modLib = context.modArm64Lib,
                 origLibPath = APK_ORIG_ARM64_LIB_PATH
             ) || return false
+            installPlugins(context, arm64Lib.parentFile!!)
         }
 
         if (armLib.exists()) {
@@ -462,6 +464,7 @@ class AppPatcher(
                 modLib = context.modArmLib,
                 origLibPath = APK_ORIG_ARM_LIB_PATH
             ) || return false
+            installPlugins(context, armLib.parentFile!!)
         }
 
         if (classesDex.exists()) {
@@ -521,6 +524,27 @@ class AppPatcher(
 
         // we're finally done :')
         return true
+    }
+
+    private fun installPlugins(context: Context, libDir: File) {
+        val plugins = PluginManager.enabledPluginFiles(context)
+        if (plugins.isEmpty()) return
+
+        val installedNames = mutableListOf<String>()
+        for (plugin in plugins) {
+            val destName = PluginManager.prefixedName(plugin.name)
+            val dest = libDir.resolve(destName)
+            try {
+                plugin.copyTo(dest, overwrite = true)
+                installedNames.add(destName)
+            } catch (_: Exception) {
+                log(context.getString(R.string.failed_to_install_plugin).format(plugin.name))
+            }
+        }
+
+        if (installedNames.isNotEmpty()) {
+            log(context.getString(R.string.plugins_patched).format(installedNames.joinToString(", ")))
+        }
     }
 
     private suspend fun installApks(context: Context, files: Array<File>): Boolean {
