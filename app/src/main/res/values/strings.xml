@@ -32,6 +32,13 @@
     <string name="force_redownload_mod">Force redownload Hachimi</string>
     <string name="force_redownload_mod_desc">Invalidate the existing libraries and force them to be redownloaded.</string>
     <string name="force_redownload_mod_notice">Hachimi will be redownloaded on the next app patching session.</string>
+    <string name="plugins_title">Plugins</string>
+    <string name="add_plugin">Add plugin</string>
+    <string name="remove_plugin">Remove</string>
+    <string name="no_plugins">No plugins added.</string>
+    <string name="plugin_added">Plugin added.</string>
+    <string name="plugin_removed">Plugin removed.</string>
+    <string name="failed_to_add_plugin">Failed to add plugin.</string>
 
     <!-- About -->
     <string name="app_desc">UM:PD Hachimi mod patching tool for Android.</string>
@@ -92,6 +99,8 @@
     <string name="invalid_apk_file_name">Invalid APK file: %s</string>
     <string name="detected_apk_split">Detected APK split type: %s</string>
     <string name="libraries_patched">Libraries patched: %s</string>
+    <string name="plugins_patched">Plugins patched: %s</string>
+    <string name="failed_to_install_plugin">Failed to install plugin: %s</string>
     <string name="invalid_apk_splits_duplicate">Invalid APK splits; another %s APK was found.</string>
     <string name="apk_splits_missing_base">Base APK missing from APK splits.</string>
     <string name="invalid_split_apk_multiple_type">Invalid split APK. Multiple types were detected in one file.</string>

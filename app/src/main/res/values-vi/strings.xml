@@ -101,4 +101,13 @@
     <string name="shizuku_install_fail">Cài đặt Shizuku thất bại: %s</string>
     <string name="shizuku_install_error">Cài đặt Shizuku thất bại do một ngoại lệ: %s</string>
     <string name="shizuku_install_fail_unexpected">Dịch vụ bị ngắt kết nối bất ngờ.</string>
+    <string name="plugins_title">Plugin</string>
+    <string name="add_plugin">Thêm plugin</string>
+    <string name="remove_plugin">Xóa</string>
+    <string name="no_plugins">Chưa có plugin nào.</string>
+    <string name="plugin_added">Đã thêm plugin.</string>
+    <string name="plugin_removed">Đã xóa plugin.</string>
+    <string name="failed_to_add_plugin">Thêm plugin thất bại.</string>
+    <string name="plugins_patched">Các plugin đã được vá: %s</string>
+    <string name="failed_to_install_plugin">Cài đặt plugin thất bại: %s</string>
 </resources>

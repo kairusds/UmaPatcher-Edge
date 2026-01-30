@@ -1,5 +1,9 @@
 package com.leadrdrk.umapatcher.ui.screen
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +17,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,10 +37,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leadrdrk.umapatcher.R
 import com.leadrdrk.umapatcher.core.GameChecker
+import com.leadrdrk.umapatcher.core.PluginEntry
+import com.leadrdrk.umapatcher.core.PluginManager
 import com.leadrdrk.umapatcher.ui.component.TopBar
 import com.leadrdrk.umapatcher.ui.patcher.AppPatcherCard
 import com.leadrdrk.umapatcher.ui.screen.destinations.AppSelectScreenDestination
 import com.leadrdrk.umapatcher.utils.safeNavigate
+import com.leadrdrk.umapatcher.utils.showToast
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -64,6 +75,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         ) {
             InstallStatusCard(navigator)
             AppPatcherCard(navigator)
+            PluginSection()
             Spacer(Modifier.height(8.dp))
         }
     }
@@ -129,6 +141,129 @@ fun InstallStatusCard(navigator: DestinationsNavigator) {
                         text = stringResource(R.string.game_not_installed_info),
                         style = MaterialTheme.typography.bodyMedium
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PluginSection() {
+    val context = LocalContext.current
+    val plugins = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(listOf<PluginEntry>()) }
+
+    val importPluginLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val added = PluginManager.addPlugin(context, uri)
+        if (added == null) {
+            context.showToast(context.getString(R.string.failed_to_add_plugin), Toast.LENGTH_SHORT)
+        } else {
+            context.showToast(context.getString(R.string.plugin_added), Toast.LENGTH_SHORT)
+        }
+        plugins.value = PluginManager.listPlugins(context)
+    }
+
+    LaunchedEffect(Unit) {
+        plugins.value = PluginManager.listPlugins(context)
+    }
+
+    Card(
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_apk_install),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(R.string.plugins_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                Spacer(Modifier.weight(1f))
+                ElevatedButton(
+                    onClick = { importPluginLauncher.launch(arrayOf("*/*")) }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_file_open),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.add_plugin),
+                        modifier = Modifier.padding(start = 6.dp)
+                    )
+                }
+            }
+
+            if (plugins.value.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.no_plugins),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                plugins.value.forEach { plugin ->
+                    Card(
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = plugin.enabled,
+                                onCheckedChange = {
+                                    PluginManager.setEnabled(context, plugin.fileName, it)
+                                    plugins.value = PluginManager.listPlugins(context)
+                                }
+                            )
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = plugin.name,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Text(
+                                    text = plugin.fileName,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Text(
+                                text = stringResource(R.string.remove_plugin),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                                    .clickable {
+                                        PluginManager.removePlugin(context, plugin.fileName)
+                                        plugins.value = PluginManager.listPlugins(context)
+                                        context.showToast(
+                                            context.getString(R.string.plugin_removed),
+                                            Toast.LENGTH_SHORT
+                                        )
+                                    }
+                            )
+                        }
+                    }
                 }
             }
         }
