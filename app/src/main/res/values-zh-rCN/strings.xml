@@ -101,4 +101,13 @@
     <string name="shizuku_install_fail">Shizuku 安装失败: %s</string>
     <string name="shizuku_install_error">Shizuku 安装失败并出现异常: %s</string>
     <string name="shizuku_install_fail_unexpected">服务意外断开连接。</string>
+    <string name="plugins_title">插件</string>
+    <string name="add_plugin">添加插件</string>
+    <string name="remove_plugin">移除</string>
+    <string name="no_plugins">未添加插件。</string>
+    <string name="plugin_added">已添加插件。</string>
+    <string name="plugin_removed">已移除插件。</string>
+    <string name="failed_to_add_plugin">添加插件失败。</string>
+    <string name="plugins_patched">已补丁插件：%s</string>
+    <string name="failed_to_install_plugin">安装插件失败：%s</string>
 </resources>
