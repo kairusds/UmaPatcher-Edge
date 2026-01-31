@@ -108,6 +108,7 @@
     <string name="plugin_added">Đã thêm plugin.</string>
     <string name="plugin_removed">Đã xóa plugin.</string>
     <string name="failed_to_add_plugin">Thêm plugin thất bại.</string>
+    <string name="plugin_warning">Cảnh báo: Plugin có thể đánh cắp tài khoản game hoặc thực thi mã độc. Chỉ cài từ nguồn đáng tin cậy.</string>
     <string name="plugins_patched">Các plugin đã được vá: %s</string>
     <string name="failed_to_install_plugin">Cài đặt plugin thất bại: %s</string>
 </resources>
