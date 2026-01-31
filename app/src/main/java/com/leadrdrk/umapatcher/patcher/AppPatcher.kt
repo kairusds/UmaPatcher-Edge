@@ -105,7 +105,6 @@ class AppPatcher(
         progress = -1f
 
         val modArm64Lib = context.modArm64Lib
-        val modArmLib = context.modArmLib
 
         val packageInfo = GameChecker.getPackageInfo(context.packageManager) ?: return false
         val appApkDir = File(packageInfo.applicationInfo.publicSourceDir).parentFile ?: return false
@@ -288,7 +287,6 @@ class AppPatcher(
 
     private enum class SplitApkType {
         BASE,
-        CONFIG_ARM,
         CONFIG_ARM64
     }
 
@@ -317,9 +315,7 @@ class AppPatcher(
                     success = false
                 }
 
-                if (processedSplits[SplitApkType.CONFIG_ARM64] != true &&
-                    processedSplits[SplitApkType.CONFIG_ARM] != true)
-                {
+                if (processedSplits[SplitApkType.CONFIG_ARM64] != true) {
                     log(context.getString(R.string.apk_files_missing_lib))
                     success = false
                 }
