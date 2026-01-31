@@ -108,6 +108,7 @@
     <string name="plugin_added">已新增外掛。</string>
     <string name="plugin_removed">已移除外掛。</string>
     <string name="failed_to_add_plugin">新增外掛失敗。</string>
+    <string name="plugin_warning">警告：外掛可能竊取遊戲帳號或執行惡意程式碼。僅從可信來源安裝。</string>
     <string name="plugins_patched">已修改外掛：%s</string>
     <string name="failed_to_install_plugin">安裝外掛失敗：%s</string>
 </resources>

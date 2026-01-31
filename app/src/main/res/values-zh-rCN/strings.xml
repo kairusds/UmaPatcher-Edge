@@ -109,5 +109,6 @@
     <string name="plugin_removed">已移除插件。</string>
     <string name="failed_to_add_plugin">添加插件失败。</string>
     <string name="plugins_patched">已补丁插件：%s</string>
+    <string name="plugin_warning">警告：插件可能窃取游戏账号或执行恶意代码。仅从可信来源安装。</string>
     <string name="failed_to_install_plugin">安装插件失败：%s</string>
 </resources>

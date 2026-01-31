@@ -39,6 +39,7 @@
     <string name="plugin_added">Plugin added.</string>
     <string name="plugin_removed">Plugin removed.</string>
     <string name="failed_to_add_plugin">Failed to add plugin.</string>
+    <string name="plugin_warning">Warning: Plugins can steal your game account or execute malicious code. Only install from trusted sources.</string>
 
     <!-- About -->
     <string name="app_desc">UM:PD Hachimi mod patching tool for Android.</string>
