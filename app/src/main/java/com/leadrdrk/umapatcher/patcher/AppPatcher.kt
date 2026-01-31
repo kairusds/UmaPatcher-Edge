@@ -49,11 +49,6 @@ private const val APK_ARM64_LIB_DIR = "lib/arm64-v8a"
 private const val APK_ARM64_LIB_PATH = "$APK_ARM64_LIB_DIR/libmain.so"
 private const val APK_ORIG_ARM64_LIB_PATH = "$APK_ARM64_LIB_DIR/libmain_orig.so"
 
-private const val MOD_ARM_LIB_NAME = "libmain-armeabi-v7a.so"
-private const val APK_ARM_LIB_DIR = "lib/armeabi-v7a"
-private const val APK_ARM_LIB_PATH  = "$APK_ARM_LIB_DIR/libmain.so"
-private const val APK_ORIG_ARM_LIB_PATH = "$APK_ARM_LIB_DIR/libmain_orig.so"
-
 private const val LEGACY_MOUNT_SCRIPT_DIR = "/data/adb/umapatcher"
 
 private val Context.libsDir: File
@@ -61,9 +56,6 @@ private val Context.libsDir: File
 
 private val Context.modArm64Lib: File
     get() = libsDir.resolve(MOD_ARM64_LIB_NAME)
-
-private val Context.modArmLib: File
-    get() = libsDir.resolve(MOD_ARM_LIB_NAME)
 
 private val Context.apkExtractDir: File
     get() = workDir.resolve("apk_extract")
@@ -119,13 +111,9 @@ class AppPatcher(
         val appApkDir = File(packageInfo.applicationInfo.publicSourceDir).parentFile ?: return false
 
         val arm64LibDir = appApkDir.resolve("lib/arm64")
-        val armLibDir = appApkDir.resolve("lib/arm")
 
         if (RootUtils.testDirectory(arm64LibDir.path)) {
             installModLib(modArm64Lib, arm64LibDir)
-        }
-        else if (RootUtils.testDirectory(armLibDir.path)) {
-            installModLib(modArmLib, armLibDir)
         }
         else {
             log(context.getString(R.string.app_lib_dir_not_found))
@@ -399,7 +387,6 @@ class AppPatcher(
         progress = -1f
 
         val arm64Lib = extractDir.resolve(APK_ARM64_LIB_PATH)
-        val armLib = extractDir.resolve(APK_ARM_LIB_PATH)
         val classesDex = extractDir.resolve("classes.dex")
         var processed = false
         var libPatched = false
@@ -455,16 +442,6 @@ class AppPatcher(
                 origLibPath = APK_ORIG_ARM64_LIB_PATH
             ) || return false
             installPlugins(context, arm64Lib.parentFile!!)
-        }
-
-        if (armLib.exists()) {
-            patchArchLibs(
-                splitType = SplitApkType.CONFIG_ARM,
-                lib = armLib,
-                modLib = context.modArmLib,
-                origLibPath = APK_ORIG_ARM_LIB_PATH
-            ) || return false
-            installPlugins(context, armLib.parentFile!!)
         }
 
         if (classesDex.exists()) {
@@ -691,9 +668,8 @@ class AppPatcher(
             val tagName = latest["tag_name"] as String
 
             val arm64Lib = context.modArm64Lib
-            val armLib = context.modArmLib
 
-            if (tagName == currentVer && arm64Lib.exists() && armLib.exists()) {
+            if (tagName == currentVer && arm64Lib.exists()) {
                 // Already up to date
                 return tagName
             }
@@ -702,10 +678,6 @@ class AppPatcher(
             val arm64LibUrl = URL(
                 getAssetDownloadUrl(assets, MOD_ARM64_LIB_NAME) ?:
                 throw RuntimeException("ARM64 lib asset not found")
-            )
-            val armLibUrl = URL(
-                getAssetDownloadUrl(assets, MOD_ARM_LIB_NAME) ?:
-                throw RuntimeException("ARM lib asset not found")
             )
             val sha256Url = URL(
                 getAssetDownloadUrl(assets, "sha256.json") ?:
@@ -718,7 +690,6 @@ class AppPatcher(
             // Download the libraries to temporary files
             val workDir = context.workDir
             val arm64LibTmp = workDir.resolve(MOD_ARM64_LIB_NAME)
-            val armLibTmp = workDir.resolve(MOD_ARM_LIB_NAME)
 
             log(context.getString(R.string.downloading_file).format(MOD_ARM64_LIB_NAME))
             progress = -1f
@@ -726,23 +697,15 @@ class AppPatcher(
                 progress = it
             })
 
-            log(context.getString(R.string.downloading_file).format(MOD_ARM_LIB_NAME))
-            progress = -1f
-            val armSha256 = bytesToHex(downloadFileAndDigestSHA256(armLibUrl, armLibTmp) {
-                progress = it
-            })
-
             // Check their hashes
-            if (arm64Sha256 != hashes[MOD_ARM64_LIB_NAME] || armSha256 != hashes[MOD_ARM_LIB_NAME]) {
+            if (arm64Sha256 != hashes[MOD_ARM64_LIB_NAME]) {
                 log(context.getString(R.string.corrupted_file_abort_download))
                 arm64LibTmp.delete()
-                armLibTmp.delete()
                 throw IOException()
             }
 
             // Move the files to their destination
             arm64LibTmp.renameTo(arm64Lib) || throw RuntimeException("Failed to move ARM64 lib")
-            armLibTmp.renameTo(armLib) || throw RuntimeException("Failed to move ARM lib")
 
             // Update version string
             context.dataStore.edit { preferences ->
