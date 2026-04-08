@@ -112,7 +112,11 @@ class AppPatcher(
         val arm64LibDir = appApkDir.resolve("lib/arm64")
 
         if (RootUtils.testDirectory(arm64LibDir.path)) {
-            installModLib(modArm64Lib, arm64LibDir)
+            if (installModLib(modArm64Lib, arm64LibDir)) {
+                installPlugins(context, arm64LibDir, isDirectInstall = true)
+            } else {
+                return false
+            }
         }
         else {
             log(context.getString(R.string.app_lib_dir_not_found))
@@ -499,7 +503,7 @@ class AppPatcher(
         return true
     }
 
-    private fun installPlugins(context: Context, libDir: File) {
+    private fun installPlugins(context: Context, libDir: File, isDirectInstall: Boolean = false) {
         val plugins = PluginManager.enabledPluginFiles(context)
         if (plugins.isEmpty()) return
 
@@ -508,8 +512,18 @@ class AppPatcher(
             val destName = PluginManager.prefixedName(plugin.name)
             val dest = libDir.resolve(destName)
             try {
-                plugin.copyTo(dest, overwrite = true)
-                installedNames.add(destName)
+                val success = if (isDirectInstall) {
+                    RootUtils.copyGameLibrary(plugin.path, dest.path).isSuccess
+                } else {
+                    plugin.copyTo(dest, overwrite = true)
+                    true
+                }
+
+                if (success) {
+                    installedNames.add(destName)
+                } else {
+                    log(context.getString(R.string.failed_to_install_plugin).format(plugin.name))
+                }
             } catch (_: Exception) {
                 log(context.getString(R.string.failed_to_install_plugin).format(plugin.name))
             }
