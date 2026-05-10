@@ -39,6 +39,11 @@ jobs:
         SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
+    - name: Attest App
+      uses: actions/attest@v4
+      with:
+        subject-path: app/build/outputs/apk/release/*.apk
+
     - name: Set app version env var
       run: |
         VERSION_NAME=$(grep -oP 'versionName\s*"\K[^"]+' app/build.gradle)
