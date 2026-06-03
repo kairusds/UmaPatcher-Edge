@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -199,6 +200,7 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
     ) {
         // Custom .so file picker (shown when "use latest version" is disabled in settings)
         if (!useLatestVersion) {
+            Spacer(Modifier.height(16.dp))
             ElevatedCard(
                 colors = CardDefaults.elevatedCardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -244,6 +246,7 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                 }
             }
             Spacer(Modifier.height(16.dp))
+            Divider()
         }
 
         val shizukuStatusText = if (isShizukuAvailable) stringResource(R.string.shizuku_install_available) else stringResource(R.string.shizuku_install_unavailable)

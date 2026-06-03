@@ -50,12 +50,12 @@
 
     <!-- Custom .so file picker -->
     <string name="use_latest_version">Use latest version</string>
-    <string name="use_latest_version_desc">Download or use the latest Hachimi Edge version automatically.</string>
-    <string name="select_custom_so">Select custom Hachimi Edge .so file</string>
+    <string name="use_latest_version_desc">Automatically use the latest Hachimi Edge version. Disable to manually pick a .so file.</string>
+    <string name="select_custom_so">Tap here to select Hachimi Edge file</string>
     <string name="no_custom_so_selected">No file selected</string>
     <string name="custom_so_supported_files">Supported files: .so</string>
-    <string name="copying_custom_so">Copying custom Hachimi Edge .so file</string>
-    <string name="failed_to_read_custom_so">Failed to read custom Hachimi Edge .so file.</string>
+    <string name="copying_custom_so">Copying Hachimi Edge .so file</string>
+    <string name="failed_to_read_custom_so">Failed to read Hachimi Edge .so file.</string>
 
     <!-- Patcher options -->
     <string name="install_method">Install method</string>
