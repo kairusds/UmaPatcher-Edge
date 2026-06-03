@@ -67,6 +67,9 @@ android {
             excludes += "META-INF/*"
         }
     }
+    lint {
+        disable.add("MissingTranslation")
+    }
     namespace 'com.leadrdrk.umapatcher'
 }
 
