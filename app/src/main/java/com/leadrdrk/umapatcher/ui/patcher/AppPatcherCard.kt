@@ -30,12 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leadrdrk.umapatcher.R
 import com.leadrdrk.umapatcher.MainActivity
+import com.leadrdrk.umapatcher.core.PrefKey
+import com.leadrdrk.umapatcher.core.getPrefValue
 import com.leadrdrk.umapatcher.patcher.AppPatcher
 import com.leadrdrk.umapatcher.shizuku.ShizukuState
 import com.leadrdrk.umapatcher.ui.component.RadioGroupOption
@@ -45,6 +48,7 @@ import rikka.shizuku.Shizuku
 
 @Composable
 fun AppPatcherCard(navigator: DestinationsNavigator) {
+    val context = LocalContext.current
     var showShizukuRationaleDialog by remember { mutableStateOf(false) }
     var showShizukuNotAvailableDialog by remember { mutableStateOf(false) }
 
@@ -68,6 +72,29 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
             fileUris = Array(1) { uri }
         }
     }
+    // Read useLatestVersion from preferences
+    var useLatestVersion by remember { mutableStateOf(true) }
+    LaunchedEffect(true) {
+        useLatestVersion = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
+    }
+
+    var customSoUri by remember { mutableStateOf<Uri?>(null) }
+    var customSoFileName by remember { mutableStateOf<String?>(null) }
+
+    // Custom .so file picker launcher (supports external file managers)
+    val customSoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val uri = it.data?.data
+        if (uri != null) {
+            customSoUri = uri
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            customSoFileName = cursor?.use {
+                if (it.moveToFirst()) {
+                    val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex >= 0) it.getString(nameIndex) else null
+                } else null
+            } ?: uri.lastPathSegment
+        }
+    }
     val isShizukuAvailable by ShizukuState.isAvailable
 
     LaunchedEffect(navigator, installMethod.intValue, fileUris) {
@@ -79,7 +106,8 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                         fileUris = fileUris,
                         install = true,
                         directInstall = false,
-                        shizukuInstall = true
+                        shizukuInstall = true,
+                        customSoUri = if (!useLatestVersion) customSoUri else null
                     )
                 )
             }
@@ -121,6 +149,7 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
         buttons = {
             val isShizukuOptionSelected = installMethod.intValue == 3
             val isButtonEnabled = when {
+                !useLatestVersion && customSoUri == null -> false
                 installMethod.intValue == 2 -> true
                 else -> fileUris.isNotEmpty()
             }
@@ -137,7 +166,13 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                         if(Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
                             PatcherLauncher.launch(
                                 navigator,
-                                AppPatcher(fileUris, install = true, directInstall = false, shizukuInstall = true)
+                                AppPatcher(
+                                    fileUris,
+                                    install = true,
+                                    directInstall = false,
+                                    shizukuInstall = true,
+                                    customSoUri = if (!useLatestVersion) customSoUri else null
+                                )
                             )
                         }else if (Shizuku.shouldShowRequestPermissionRationale()) {
                             showShizukuRationaleDialog = true
@@ -151,7 +186,8 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                                 fileUris = if (installMethod.intValue == 2) arrayOf() else fileUris,
                                 install = installMethod.intValue == 1,
                                 directInstall = installMethod.intValue == 2,
-                                shizukuInstall = false
+                                shizukuInstall = false,
+                                customSoUri = if (!useLatestVersion) customSoUri else null
                             )
                         )
                     }
@@ -161,6 +197,55 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
             }
         }
     ) {
+        // Custom .so file picker (shown when "use latest version" is disabled in settings)
+        if (!useLatestVersion) {
+            ElevatedCard(
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                            .apply {
+                                addCategory(Intent.CATEGORY_OPENABLE)
+                                type = "*/*"
+                            }
+                        customSoLauncher.launch(intent)
+                    }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Icon(painterResource(R.drawable.ic_file_open), null)
+                    Spacer(Modifier.width(16.dp))
+                    Column {
+                        Text(
+                            text = stringResource(R.string.select_custom_so),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = if (customSoFileName != null)
+                                customSoFileName!!
+                            else
+                                stringResource(R.string.no_custom_so_selected),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = stringResource(R.string.custom_so_supported_files),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+
         val shizukuStatusText = if (isShizukuAvailable) stringResource(R.string.shizuku_install_available) else stringResource(R.string.shizuku_install_unavailable)
         val shizukuStatusColor = if (isShizukuAvailable) Color(0xFF388E3C) else MaterialTheme.colorScheme.error
 

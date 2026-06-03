@@ -40,6 +40,7 @@ fun SettingsScreen() {
     val context = LocalContext.current
     val checkForUpdates = remember { mutableStateOf(false) }
     val appLibsVersion = remember { mutableStateOf("") }
+    val useLatestVersion = remember { mutableStateOf(true) }
     var configRead by remember { mutableStateOf(false) }
 
     val repoState = rememberDataStoreStringState(
@@ -107,9 +108,14 @@ fun SettingsScreen() {
         it[PrefKey.APP_LIBS_VERSION] = appLibsVersion.value
     }
 
+    PrefUpdateEffect(useLatestVersion.value) {
+        it[PrefKey.USE_LATEST_VERSION] = useLatestVersion.value
+    }
+
     LaunchedEffect(true) {
         checkForUpdates.value = context.getPrefValue(PrefKey.CHECK_FOR_UPDATES) as Boolean
         appLibsVersion.value = context.getPrefValue(PrefKey.APP_LIBS_VERSION) as String
+        useLatestVersion.value = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
         configRead = true
     }
 
@@ -129,6 +135,12 @@ fun SettingsScreen() {
                 title = stringResource(R.string.check_for_updates),
                 desc = stringResource(R.string.check_for_updates_desc),
                 state = checkForUpdates
+            )
+
+            BooleanOption(
+                title = stringResource(R.string.use_latest_version),
+                desc = stringResource(R.string.use_latest_version_desc),
+                state = useLatestVersion
             )
 
             StringOption(

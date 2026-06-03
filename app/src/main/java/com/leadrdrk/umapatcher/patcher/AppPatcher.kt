@@ -67,13 +67,19 @@ class AppPatcher(
     private val fileUris: Array<Uri>,
     private val install: Boolean,
     private val directInstall: Boolean,
-    private val shizukuInstall: Boolean
+    private val shizukuInstall: Boolean,
+    private val customSoUri: Uri? = null
 ): Patcher() {
     override fun run(context: Context): Boolean {
         if (directInstall && !isDirectInstallAllowed(context))
             return false
 
-        val libVer = runBlocking { syncModLibs(context) } ?: return false
+        val libVer = if (customSoUri != null) {
+            runBlocking { copyCustomSo(context) } ?: return false
+            "custom"
+        } else {
+            runBlocking { syncModLibs(context) } ?: return false
+        }
         log(context.getString(R.string.using_app_lib_ver).format(libVer))
 
         if (directInstall)
@@ -661,6 +667,34 @@ class AppPatcher(
 
     private fun getAssetDownloadUrl(assets: List<Map<String, Any>>, name: String) =
         assets.find { it["name"] as String == name }?.get("browser_download_url") as String?
+
+    private suspend fun copyCustomSo(context: Context): String? {
+        task = context.getString(R.string.copying_custom_so)
+        progress = -1f
+
+        val libsDir = context.libsDir
+        if (!libsDir.exists()) libsDir.mkdir() || return null
+
+        val modArm64Lib = context.modArm64Lib
+
+        try {
+            context.contentResolver.openInputStream(customSoUri!!).use { input ->
+                if (input == null) {
+                    log(context.getString(R.string.failed_to_read_custom_so))
+                    return null
+                }
+
+                modArm64Lib.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            return "custom"
+        } catch (ex: Exception) {
+            Log.e("AppPatcher", "Exception copying custom .so", ex)
+            log(context.getString(R.string.failed_to_read_custom_so))
+            return null
+        }
+    }
 
     private suspend fun syncModLibs(context: Context): String? {
         task = context.getString(R.string.syncing_app_libs)
