@@ -20,6 +20,7 @@ object PrefKey {
     val APP_LIBS_VERSION = stringPreferencesKey("app_libs_version")
     val HACHIMI_REPO = stringPreferencesKey("hachimi_repo")
     val USE_LATEST_VERSION = booleanPreferencesKey("use_latest_version")
+    val USE_UNIVERSAL_SIGNING_KEY = booleanPreferencesKey("use_universal_signing_key")
 }
 
 val defaultValues = mapOf(
@@ -28,6 +29,7 @@ val defaultValues = mapOf(
     Pair(PrefKey.APP_LIBS_VERSION, ""),
     Pair(PrefKey.HACHIMI_REPO, "kairusds/Hachimi-Edge"),
     Pair(PrefKey.USE_LATEST_VERSION, true),
+    Pair(PrefKey.USE_UNIVERSAL_SIGNING_KEY, false),
 )
 
 suspend fun Context.getPrefValue(key: Preferences.Key<*>): Any? {

@@ -23,6 +23,7 @@ import com.leadrdrk.umapatcher.utils.bytesToHex
 import com.leadrdrk.umapatcher.utils.downloadFileAndDigestSHA256
 import com.leadrdrk.umapatcher.utils.fetchJson
 import com.leadrdrk.umapatcher.utils.ksFile
+import com.leadrdrk.umapatcher.utils.universalKsFile
 import com.leadrdrk.umapatcher.utils.workDir
 import com.leadrdrk.umapatcher.zip.ZipExtractor
 import com.reandroid.apk.ApkModule
@@ -498,8 +499,21 @@ class AppPatcher(
         progress = -1f
 
         val signedApkFile = context.workDir.resolve("tmp_signed.apk")
-        val apkSigner = ApkSigner("UmaPatcher", "securep@ssw0rd816-n")
-        apkSigner.signApk(file, signedApkFile, context.ksFile)
+        val useUniversalSigningKey = context.getPrefValue(PrefKey.USE_UNIVERSAL_SIGNING_KEY) as Boolean
+        if (useUniversalSigningKey) {
+            val universalKs = context.universalKsFile
+            if (!universalKs.exists()) {
+                context.assets.open("patched.keystore").use { input ->
+                    universalKs.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+            ApkSigner.signApkUniversal(file, signedApkFile, universalKs)
+        } else {
+            val apkSigner = ApkSigner("UmaPatcher", "securep@ssw0rd816-n")
+            apkSigner.signApk(file, signedApkFile, context.ksFile)
+        }
         if (!signedApkFile.renameTo(file)) {
             log(context.getString(R.string.failed_to_move_file).format(signedApkFile.name))
             return false

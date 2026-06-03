@@ -15,6 +15,9 @@ val Context.repoDir: File
 val Context.ksFile: File
     get() = filesDir.resolve("keystore.bks")
 
+val Context.universalKsFile: File
+    get() = filesDir.resolve("patched.keystore")
+
 val Context.pluginsDir: File
     get() = filesDir.resolve("plugins")
 

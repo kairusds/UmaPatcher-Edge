@@ -32,6 +32,7 @@ import com.leadrdrk.umapatcher.ui.component.TopBar
 import com.leadrdrk.umapatcher.ui.component.rememberDataStoreStringState
 import com.leadrdrk.umapatcher.utils.ksFile
 import com.leadrdrk.umapatcher.utils.showToast
+import com.leadrdrk.umapatcher.utils.universalKsFile
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
@@ -41,6 +42,7 @@ fun SettingsScreen() {
     val checkForUpdates = remember { mutableStateOf(false) }
     val appLibsVersion = remember { mutableStateOf("") }
     val useLatestVersion = remember { mutableStateOf(true) }
+    val useUniversalSigningKey = remember { mutableStateOf(false) }
     var configRead by remember { mutableStateOf(false) }
 
     val repoState = rememberDataStoreStringState(
@@ -112,10 +114,15 @@ fun SettingsScreen() {
         it[PrefKey.USE_LATEST_VERSION] = useLatestVersion.value
     }
 
+    PrefUpdateEffect(useUniversalSigningKey.value) {
+        it[PrefKey.USE_UNIVERSAL_SIGNING_KEY] = useUniversalSigningKey.value
+    }
+
     LaunchedEffect(true) {
         checkForUpdates.value = context.getPrefValue(PrefKey.CHECK_FOR_UPDATES) as Boolean
         appLibsVersion.value = context.getPrefValue(PrefKey.APP_LIBS_VERSION) as String
         useLatestVersion.value = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
+        useUniversalSigningKey.value = context.getPrefValue(PrefKey.USE_UNIVERSAL_SIGNING_KEY) as Boolean
         configRead = true
     }
 
@@ -143,6 +150,12 @@ fun SettingsScreen() {
                 state = useLatestVersion
             )
 
+            BooleanOption(
+                title = stringResource(R.string.universal_signing_key),
+                desc = stringResource(R.string.universal_signing_key_desc),
+                state = useUniversalSigningKey
+            )
+
             StringOption(
                 title = stringResource(R.string.hachimi_repo),
                 state = repoState,
@@ -151,8 +164,12 @@ fun SettingsScreen() {
 
             OptionBase(
                 title = stringResource(R.string.export_signing_key),
-                desc = stringResource(R.string.export_signing_key_desc),
+                desc = if (useUniversalSigningKey.value)
+                    context.getString(R.string.signing_key_disabled_universal)
+                else
+                    context.getString(R.string.export_signing_key_desc),
                 onClick = {
+                    if (useUniversalSigningKey.value) return@OptionBase
                     if (context.ksFile.exists()) {
                         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
                             .apply {
@@ -174,8 +191,12 @@ fun SettingsScreen() {
 
             OptionBase(
                 title = stringResource(R.string.import_signing_key),
-                desc = stringResource(R.string.import_signing_key_desc),
+                desc = if (useUniversalSigningKey.value)
+                    context.getString(R.string.signing_key_disabled_universal)
+                else
+                    context.getString(R.string.import_signing_key_desc),
                 onClick = {
+                    if (useUniversalSigningKey.value) return@OptionBase
                     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                         .apply {
                             addCategory(Intent.CATEGORY_OPENABLE)

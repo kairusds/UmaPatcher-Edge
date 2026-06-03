@@ -1,6 +1,7 @@
 package com.leadrdrk.umapatcher.patcher
 
 import com.android.apksig.ApkSigner
+import com.android.apksig.KeyConfig
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509v3CertificateBuilder
@@ -65,15 +66,48 @@ internal class ApkSigner(
 
         val config = ApkSigner.SignerConfig.Builder(
             cn,
-            keyStore.getKey(alias, passwordCharArray) as PrivateKey,
+            KeyConfig.Jca(keyStore.getKey(alias, passwordCharArray) as PrivateKey),
             listOf(keyStore.getCertificate(alias) as X509Certificate)
         ).build()
 
         val signer = ApkSigner.Builder(listOf(config))
+        signer.setV1SigningEnabled(true)
+        signer.setV2SigningEnabled(true)
+        signer.setV3SigningEnabled(true)
+        signer.setV4SigningEnabled(false)
         signer.setCreatedBy(cn)
         signer.setInputApk(input)
         signer.setOutputApk(output)
 
         signer.build().sign()
+    }
+
+    companion object {
+        private const val UNIVERSAL_KS_PASSWORD = "securep@ssw0rd816-n"
+        private const val UNIVERSAL_KS_ALIAS = "patcheduma"
+
+        fun signApkUniversal(input: File, output: File, ks: File) {
+            val passwordCharArray = UNIVERSAL_KS_PASSWORD.toCharArray()
+
+            val keyStore = KeyStore.getInstance("PKCS12")
+            FileInputStream(ks).use { fis -> keyStore.load(fis, passwordCharArray) }
+
+            val config = ApkSigner.SignerConfig.Builder(
+                "UmaPatcher Edge",
+                KeyConfig.Jca(keyStore.getKey(UNIVERSAL_KS_ALIAS, passwordCharArray) as PrivateKey),
+                listOf(keyStore.getCertificate(UNIVERSAL_KS_ALIAS) as X509Certificate)
+            ).build()
+
+            val signer = ApkSigner.Builder(listOf(config))
+            signer.setV1SigningEnabled(true)
+            signer.setV2SigningEnabled(true)
+            signer.setV3SigningEnabled(true)
+            signer.setV4SigningEnabled(false)
+            signer.setCreatedBy("UmaPatcher Edge")
+            signer.setInputApk(input)
+            signer.setOutputApk(output)
+
+            signer.build().sign()
+        }
     }
 }
