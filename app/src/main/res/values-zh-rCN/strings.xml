@@ -111,4 +111,14 @@
     <string name="plugins_patched">已补丁插件：%s</string>
     <string name="plugin_warning">警告：插件可能窃取游戏账号或执行恶意代码。仅从可信来源安装。</string>
     <string name="failed_to_install_plugin">安装插件失败：%s</string>
+    <string name="universal_signing_key">通用签名密钥</string>
+    <string name="universal_signing_key_desc">使用预编译的通用密钥代替基于设备的 BKS 密钥库对补丁后的 APK 进行签名。导入/导出签名密钥选项将被忽略。\n\n警告：如果启用此选项，所有补丁后的 APK 都将共享相同的签名密钥。任何持有此密钥的人都可以使用此密钥签名恶意 APK 并且这些恶意 APK 可以覆盖安装您的游戏。使用风险自负。</string>
+    <string name="signing_key_disabled_universal">已禁用，因为通用签名密钥已启用。</string>
+    <string name="use_latest_version">使用最新版本</string>
+    <string name="use_latest_version_desc">自动使用最新的 Hachimi Edge 版本。关闭后可手动选择 .so 文件来安装。</string>
+    <string name="select_custom_so">点击此处选择 Hachimi Edge 的安装文件</string>
+    <string name="no_custom_so_selected">未选择文件</string>
+    <string name="custom_so_supported_files">支持的文件：.so</string>
+    <string name="copying_custom_so">正在复制 Hachimi Edge .so 文件</string>
+    <string name="failed_to_read_custom_so">读取 Hachimi Edge .so 文件失败。</string>
 </resources>
