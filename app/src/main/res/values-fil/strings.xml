@@ -7,10 +7,10 @@
     <!-- Home -->
     <string name="game_installed">Naka-install ang laro</string>
     <string name="game_not_installed">Hindi naka-install ang laro</string>
-    <string name="game_not_installed_info">Maaaring hindi available ang ilang feature..</string>
+    <string name="game_not_installed_info">Maaaring hindi available ang ilang feature.</string>
     <string name="package_name_prefix">"Package: "</string>
     <string name="version_name_prefix">"Version: "</string>
-    <string name="tap_to_select_app">Mag-tap dito para pumili ng ibang app</string>
+    <string name="tap_to_select_app">I-tap dito para pumili ng ibang app</string>
 
     <string name="app_patcher_label">Pag-patch ng app</string>
     <string name="patch">I-patch</string>
