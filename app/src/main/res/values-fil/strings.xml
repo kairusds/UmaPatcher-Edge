@@ -1,0 +1,143 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
+    <string name="app_name" translatable="false">UmaPatcher Edge</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="about">Tungkol</string>
+
+    <!-- Home -->
+    <string name="game_installed">Naka-install ang laro</string>
+    <string name="game_not_installed">Hindi naka-install ang laro</string>
+    <string name="game_not_installed_info">Maaaring hindi available ang ilang feature.</string>
+    <string name="package_name_prefix">"Package: "</string>
+    <string name="version_name_prefix">"Version: "</string>
+    <string name="tap_to_select_app">I-tap dito para pumili ng ibang app</string>
+
+    <string name="app_patcher_label">Pag-patch ng app</string>
+    <string name="patch">I-patch</string>
+    <string name="select_an_app">Pumili ng app</string>
+    <string name="n_files_selected">%d file ang pinili</string>
+    <string name="tap_to_select_file">I-tap dito para pumili ng mga file</string>
+    <string name="app_patcher_supported_files">Mga sinusuportahang file: APK / Split APKs, XAPK</string>
+
+    <!-- Settings -->
+    <string name="check_for_updates_desc">Tignan kung may update kapag simulan ang app</string>
+    <string name="hachimi_repo">Hachimi repo</string>
+    <string name="export_signing_key">I-export ang signing key</string>
+    <string name="export_signing_key_desc">I-export ang BKS keystore na ginagamit para i-sign ang APK files.</string>
+    <string name="import_signing_key">I-mport signing key</string>
+    <string name="import_signing_key_desc">Mag-import ng BKS keystore na gagamitin para i-sign ang APK files.</string>
+    <string name="no_keystore_to_export">Walang keystore na ie-export.</string>
+    <string name="keystore_imported">Na-import ang keystore</string>
+    <string name="failed_to_import_keystore">Hindi ma-import ang keystore.</string>
+    <string name="universal_signing_key">Universal na signing key</string>
+    <string name="universal_signing_key_desc">I-sign ang mga na-patch na APK gamit ang built-in na universal key sa halip ng isang per-device na BKS keystore. Hindi papansinin ang mga opsyon sa pag-import/pag-export ng signing key.\n\nBABALA: Lahat ng na-patch na APK ay magkakaroon ng parehong signing key kung ito ay naka-enable. Sinumang may ganitong key ay maaaring mag-sign ng mga malisyosong APK na mag-o-overwrite sa iyong app. Gamitin ito sa iyong sariling peligro.</string>
+    <string name="signing_key_disabled_universal">Naka-disable dahil naka-enable ang universal signing key.</string>
+    <string name="force_redownload_mod">Pwersahang i-redownload ang Hachimi</string>
+    <string name="force_redownload_mod_desc">I-invalidate ang mga umiiral na libraries at pilitin silang i-redownloaded.</string>
+    <string name="force_redownload_mod_notice">Ida-ddownload muli ang Hachimi sa susunod na app patching session.</string>
+    <string name="plugins_title">Mga Plugin</string>
+    <string name="add_plugin">Magdagdag ng plugin</string>
+    <string name="remove_plugin">Tanggalin</string>
+    <string name="no_plugins">Walang dinagdag na plugin.</string>
+    <string name="plugin_added">Nadagdag ang plugin.</string>
+    <string name="plugin_removed">Tinanggal ang plugin.</string>
+    <string name="failed_to_add_plugin">Hindi madagdag ang plugin.</string>
+    <string name="plugin_warning">Babala: Maaaring nakawan ng mga plugin ang iyong account o mag-execute ng mapanganib na code. Mag-install lang mula sa pinagkakatiwalaang pinagmulan.</string>
+
+    <!-- About -->
+    <string name="app_desc">UM:PD Hachimi mod patching tool para sa Android.</string>
+    <string name="check_for_updates">Tignan kung may update</string>
+    <string name="open_source_licenses">Open source licenses</string>
+    <string name="view_source_code">Tignan ang source code</string>
+    <string name="support_me">Suportahan ako sa Ko-fi</string>
+
+    <!-- Custom .so file picker -->
+    <string name="use_latest_version">Gamitin ang latest version</string>
+    <string name="use_latest_version_desc">Awtomatikong gamitin ang pinakabagong Hachimi Edge version. I-disable para manwal na pumili ng .so file.</string>
+    <string name="select_custom_so">I-tap dito para pumili ng Hachimi Edge file</string>
+    <string name="no_custom_so_selected">Walang piniling file.</string>
+    <string name="custom_so_supported_files">Mga sinusuportahang file: .so</string>
+    <string name="copying_custom_so">Kinokopya ang Hachimi Edge .so file</string>
+    <string name="failed_to_read_custom_so">Hindi mabasa ang Hachimi Edge .so file.</string>
+
+    <!-- Patcher options -->
+    <string name="install_method">Paraan ng pag-install</string>
+    <string name="install_method_desc">Anong paraan ang gagamitin para i-install ang patch.</string>
+    <string name="direct_install">Direktang install (kailangan ng root)</string>
+    <string name="save_patched_file">I-install ang patched file</string>
+    <string name="normal_install">Normal na install</string>
+    <string name="shizuku_install">Shizuku install</string>
+    <string name="shizuku_install_available">(Available)</string>
+    <string name="shizuku_install_unavailable">(Hindi available)</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_permission_required">Kailangan ng Shizuku permission</string>
+    <string name="shizuku_permission_info">Payagan ang Shizuku permission para sa app para magamit ang Shizuku installer.</string>
+    <string name="shizuku_unavailable">Hindi available ang Shizuku</string>
+    <string name="shizuku_unavailable_info">Ang Shizuku ay alinman hindi naka-install o hindi tumatakbo. Paki-install at simulan ang Shizuku para gamitin ang install method na ito. Gusto mo ba buksan ang download page para sa Shizuku?</string>
+
+    <!-- Patching -->
+    <string name="working">Working...</string>
+    <string name="completed">Tapos na</string>
+    <string name="patch_success_msg">[Matagumpay na na-patch]</string>
+    <string name="patch_failed_msg">[Nabigong i-patch]</string>
+    <string name="direct_install_unavailable">Maaari lamang gamitin ang direktang install kapag naka-install ang laro..</string>
+    <string name="root_required">Kailangan ang root para sa operasyong ito.</string>
+    <string name="failed_to_read_file">Nabigong i-read ang file: %s</string>
+    <string name="failed_to_move_file">Nabigong ilipat ang file: %s</string>
+    <string name="copying_file">Kinokopya ang file</string>
+    <string name="copying_file_name">Kinokopya ang file: %s</string>
+    <string name="patching">Pina-patch</string>
+    <string name="installing">Ini-install</string>
+    <string name="install_completed">Tapos nang i-install.</string>
+    <string name="install_failed">Nabigong i-install.</string>
+    <string name="file_saved">Na-save ang file.</string>
+    <string name="failed_to_save_file">Nabigong i-save ang file.</string>
+    <string name="extracting_file">Ine-extract ang file: %s</string>
+    <string name="creating_file">Ginagawa ang file file: %s</string>
+    <string name="cleaning_up">Cleaning up</string>
+
+    <!-- AppPatcher -->
+    <string name="syncing_app_libs">Sini-sync ang Hachimi libraries</string>
+    <string name="downloading_file">Dina-download ang file: %s</string>
+    <string name="failed_to_download_app_libs">Hindi ma-download ang Hachimi libraries.</string>
+    <string name="failed_to_sync_app_libs">Hindi ma-sync ang Hachimi libraries. Lalaktawan.</string>
+    <string name="app_lib_updated">Na-update ang Hachimi.</string>
+    <string name="using_app_lib_ver">Ginagamit ang Hachimi %s</string>
+    <string name="corrupted_file_abort_download">May na-detect na corrupted file, ititigil ang download.</string>
+    <string name="signing_apk_file">Nilalagdaan ang APK file: %s</string>
+    <string name="apk_files_missing_lib">Invalid o di-kumpletong APK files (nawawalang native libraries)</string>
+    <string name="app_lib_dir_not_found">Walang nahanap na app lib directory. Walang na-install.</string>
+    <string name="invalid_apk_file">Di-wastong APK file.</string>
+    <string name="invalid_apk_file_name">Di-wastong APK file: %s</string>
+    <string name="detected_apk_split">Na-detect ang APK split type: %s</string>
+    <string name="libraries_patched">Libraries patched: %s</string>
+    <string name="plugins_patched">Plugins patched: %s</string>
+    <string name="failed_to_install_plugin">Nabigong.i-install ang plugin: %s</string>
+    <string name="invalid_apk_splits_duplicate">Invalid APK splits; may ibang %s APK na nahanap.</string>
+    <string name="apk_splits_missing_base">Nawawala ang base APK mula sa APK splits.</string>
+    <string name="invalid_split_apk_multiple_type">Di-wastong split APK. May na-detect na maraming type sa isang file.</string>
+    <string name="detected_xapk_file">Na-detect ang XAPK file.</string>
+    <string name="detected_apk_file">Na-detect ang normal na APK file.</string>
+    <string name="patching_as_split_apks">Pina-patch bilang split APKs.</string>
+    <string name="staging_app">Staging app</string>
+    <string name="removing_legacy_files">Tinatanggal ang legacy files</string>
+    <string name="shizuku_moving_files">Nililipat ang mga file para sa Shizuku</string>
+    <string name="external_cache_unavailable">Hindi available ang external cache folder.</string>
+    <string name="copy_file_failed">Nabigong kopyahin ang file sa %s</string>
+    <string name="shizuku_files_move_failed">Nabigong ilipat ang mga file para sa Shizuku: %s</string>
+    <string name="shizuku_starting_service">Sinisimulan ang Shizuku service...</string>
+    <string name="shizuku_installing">Ini-install gamit ang Shizuku...</string>
+    <string name="shizuku_install_success">Matagumpay na na-install gamit ang Shizuku.</string>
+    <string name="shizuku_install_fail">Nabigong i-install gamit ang Shizuku: %s</string>
+    <string name="shizuku_install_error">Nabigong i-install ang Shizuku dahil sa exception: %s</string>
+    <string name="shizuku_install_fail_unexpected">Nag-disconnect ang serbisyo nang hindi inaasahan.</string>
+
+    <!-- Other -->
+    <string name="cancel">Kanselahin</string>
+    <string name="ok">OK</string>
+    <string name="update_available">May available na update</string>
+    <string name="update_available_desc">May bagong bersyon na available: %s\nBuksan ang download page?</string>
+    <string name="failed_to_check_for_updates">Hindi makatingin kung may update.</string>
+    <string name="no_updates_available">Walang available na update</string>
+</resources>
