@@ -97,6 +97,15 @@
     <string name="creating_file">Ginagawa ang file file: %s</string>
     <string name="cleaning_up">Cleaning up</string>
 
+    <!-- Merge split APKs -->
+    <string name="merge_apks">I-merge ang split APKs sa iisang APK</string>
+    <string name="merge_apks_desc">Kapag ginagamit ang \"Save patched file\" at may piniling split APK, Magiging nag-iisang APK file ang output sa halip ng XAPK.</string>
+    <string name="merging_apks">Sinasama ang mga split APK</string>
+    <string name="merge_no_base">Walang base APK na nahanap sa mga piniling split. Hindi maisasama.</string>
+    <string name="merge_failed">Failed to merge split APKs: %s</string>
+    <string name="merge_sanitizing_manifest">Sina-sanitize ang merged manifest</string>
+    <string name="merge_writing_apk">Sine-save ang merged APK</string>
+
     <!-- AppPatcher -->
     <string name="syncing_app_libs">Sini-sync ang Hachimi libraries</string>
     <string name="downloading_file">Dina-download ang file: %s</string>
@@ -113,14 +122,14 @@
     <string name="detected_apk_split">Na-detect ang APK split type: %s</string>
     <string name="libraries_patched">Libraries patched: %s</string>
     <string name="plugins_patched">Plugins patched: %s</string>
-    <string name="failed_to_install_plugin">Nabigong.i-install ang plugin: %s</string>
+    <string name="failed_to_install_plugin">Nabigong i-install ang plugin: %s</string>
     <string name="invalid_apk_splits_duplicate">Invalid APK splits; may ibang %s APK na nahanap.</string>
     <string name="apk_splits_missing_base">Nawawala ang base APK mula sa APK splits.</string>
     <string name="invalid_split_apk_multiple_type">Di-wastong split APK. May na-detect na maraming type sa isang file.</string>
     <string name="detected_xapk_file">Na-detect ang XAPK file.</string>
     <string name="detected_apk_file">Na-detect ang normal na APK file.</string>
     <string name="patching_as_split_apks">Pina-patch bilang split APKs.</string>
-    <string name="staging_app">Staging app</string>
+    <string name="staging_app">Hinahanda ang app</string>
     <string name="removing_legacy_files">Tinatanggal ang legacy files</string>
     <string name="shizuku_moving_files">Nililipat ang mga file para sa Shizuku</string>
     <string name="external_cache_unavailable">Hindi available ang external cache folder.</string>
@@ -132,6 +141,9 @@
     <string name="shizuku_install_fail">Nabigong i-install gamit ang Shizuku: %s</string>
     <string name="shizuku_install_error">Nabigong i-install ang Shizuku dahil sa exception: %s</string>
     <string name="shizuku_install_fail_unexpected">Nag-disconnect ang serbisyo nang hindi inaasahan.</string>
+    <string name="legacy_install_unknown_sources_required">Kailangan ng pahintulot</string>
+    <string name="legacy_install_unknown_sources_info">Kinakailangan ng Android na ibigay ang pahintulot na "Mag-install ng di-kilalang app" ("Install unknown apps") bago nito mabuksan ang system package installer. Pindutin ang OK para buksan ang settings page at ibigay ang pahintulot para sa UmaPatcher Edge, at bumalik dito pagkatapos ibigay ang pahintulot.</string>
+    <string name="legacy_install_failed">Nabigong buksan ang system package installer.</string>
 
     <!-- Other -->
     <string name="cancel">Kanselahin</string>
