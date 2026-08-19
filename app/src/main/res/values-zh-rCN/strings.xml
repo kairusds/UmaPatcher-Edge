@@ -121,4 +121,15 @@
     <string name="custom_so_supported_files">支持的文件：.so</string>
     <string name="copying_custom_so">正在复制 Hachimi Edge .so 文件</string>
     <string name="failed_to_read_custom_so">读取 Hachimi Edge .so 文件失败。</string>
+    <string name="legacy_install">传统方式安装</string>
+    <string name="legacy_install_unknown_sources_required">需要授予“安装未知应用”权限</string>
+    <string name="legacy_install_unknown_sources_info">Android 系统要求先授予本应用“安装未知应用”权限，才能启动系统软件包安装程序。点击“确定”前往设置页面，为 UmaPatcher Edge 授予该权限后返回此处即可。</string>
+    <string name="legacy_install_failed">启动系统软件包安装程序失败。</string>
+    <string name="merge_apks">将拆分 APK 合并为独立 APK</string>
+    <string name="merge_apks_desc">当使用“保存补丁后的文件”且选用了拆分 APK 时，输出文件将合并为独立的单个 APK，而不是打包为 XAPK。</string>
+    <string name="merging_apks">正在合并拆分 APK</string>
+    <string name="merge_no_base">在所选的安装包中未找到基础 APK，无法进行合并。</string>
+    <string name="merge_failed">合并拆分 APK 失败：%s</string>
+    <string name="merge_sanitizing_manifest">正在清理合并后的Manifest</string>
+    <string name="merge_writing_apk">正在写入合并后的 APK</string>
 </resources>
