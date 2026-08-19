@@ -21,6 +21,7 @@ object PrefKey {
     val HACHIMI_REPO = stringPreferencesKey("hachimi_repo")
     val USE_LATEST_VERSION = booleanPreferencesKey("use_latest_version")
     val USE_UNIVERSAL_SIGNING_KEY = booleanPreferencesKey("use_universal_signing_key")
+    val MERGE_APKS = booleanPreferencesKey("merge_apks")
 }
 
 val defaultValues = mapOf(
@@ -30,6 +31,7 @@ val defaultValues = mapOf(
     Pair(PrefKey.HACHIMI_REPO, "kairusds/Hachimi-Edge"),
     Pair(PrefKey.USE_LATEST_VERSION, true),
     Pair(PrefKey.USE_UNIVERSAL_SIGNING_KEY, false),
+    Pair(PrefKey.MERGE_APKS, false),
 )
 
 suspend fun Context.getPrefValue(key: Preferences.Key<*>): Any? {

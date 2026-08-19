@@ -69,6 +69,10 @@
     <string name="shizuku_install">Shizuku install</string>
     <string name="shizuku_install_available">(Available)</string>
     <string name="shizuku_install_unavailable">(Unavailable)</string>
+    <string name="legacy_install">Legacy install</string>
+    <string name="legacy_install_unknown_sources_required">Install unknown apps permission required</string>
+    <string name="legacy_install_unknown_sources_info">Android requires you to grant this app permission to install unknown apps before it can launch the system package installer. Tap OK to open the settings page, then grant the permission for UmaPatcher Edge and return here after granting the permission.</string>
+    <string name="legacy_install_failed">Failed to launch the system package installer.</string>
 
     <!-- Shizuku -->
     <string name="shizuku_permission_required">Shizuku permission required</string>
@@ -96,6 +100,15 @@
     <string name="extracting_file">Extracting file: %s</string>
     <string name="creating_file">Creating file: %s</string>
     <string name="cleaning_up">Cleaning up</string>
+
+    <!-- Merge split APKs -->
+    <string name="merge_apks">Merge split APKs into standalone APK</string>
+    <string name="merge_apks_desc">When using \"Save patched file\" and split APKs are selected, the output file will be a standalone APK instead of packaging them as an XAPK.</string>
+    <string name="merging_apks">Merging split APKs</string>
+    <string name="merge_no_base">No base APK was found among the selected splits. Cannot merge.</string>
+    <string name="merge_failed">Failed to merge split APKs: %s</string>
+    <string name="merge_sanitizing_manifest">Sanitizing merged manifest</string>
+    <string name="merge_writing_apk">Writing merged APK</string>
 
     <!-- AppPatcher -->
     <string name="syncing_app_libs">Syncing Hachimi libraries</string>

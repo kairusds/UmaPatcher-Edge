@@ -1,5 +1,7 @@
 package com.leadrdrk.umapatcher.ui.screen
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,10 +42,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.leadrdrk.umapatcher.R
+import com.leadrdrk.umapatcher.patcher.LegacyInstaller
 import com.leadrdrk.umapatcher.ui.component.BackButton
+import com.leadrdrk.umapatcher.ui.component.SimpleOkCancelDialog
 import com.leadrdrk.umapatcher.ui.component.TopBar
 import com.leadrdrk.umapatcher.ui.patcher.PatcherLauncher
 import com.leadrdrk.umapatcher.utils.copyTo
+import com.leadrdrk.umapatcher.utils.getActivity
 import com.leadrdrk.umapatcher.utils.safeNavigate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -124,6 +129,81 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
         sfLauncher.launch(intent)
     }
 
+    var legacyFile by remember { mutableStateOf<File?>(null) }
+    var legacyCallback by remember { mutableStateOf<(Boolean) -> Unit>({}) }
+    var showLegacyPermDialog by remember { mutableStateOf(false) }
+
+
+    fun launchLegacyInstall(context: Context, file: File, callback: (Boolean) -> Unit) {
+        try {
+            val activityContext = context.getActivity() ?: context
+            val intent = LegacyInstaller.buildInstallIntent(activityContext, file)
+            activityContext.startActivity(intent)
+            legacyFile = null
+            callback(true)
+        } catch (_: ActivityNotFoundException) {
+            callback(false)
+        } catch (_: SecurityException) {
+            callback(false)
+        } catch (_: Exception) {
+            callback(false)
+        }
+    }
+
+    val legacyPermLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val file = legacyFile
+        if (file == null) {
+            legacyCallback(false)
+            return@rememberLauncherForActivityResult
+        }
+        if (LegacyInstaller.canRequestPackageInstalls(context)) {
+            launchLegacyInstall(context, file, legacyCallback)
+        } else {
+            legacyCallback(false)
+            legacyFile = null
+        }
+    }
+
+    fun onInstallLegacy(file: File, callback: (Boolean) -> Unit) {
+        legacyFile = file
+        legacyCallback = callback
+        if (LegacyInstaller.canRequestPackageInstalls(context)) {
+            launchLegacyInstall(context, file, callback)
+        } else {
+            showLegacyPermDialog = true
+        }
+    }
+
+    if (showLegacyPermDialog) {
+        SimpleOkCancelDialog(
+            title = stringResource(R.string.legacy_install_unknown_sources_required),
+            onClose = { ok ->
+                showLegacyPermDialog = false
+                if (ok) {
+                    val permIntent = LegacyInstaller.pickUnknownSourcesIntent(context)
+                    if (permIntent != null) {
+                        try {
+                            legacyPermLauncher.launch(permIntent)
+                        } catch (_: Exception) {
+                            legacyCallback(false)
+                            legacyFile = null
+                        }
+                    } else {
+                        legacyCallback(false)
+                        legacyFile = null
+                    }
+                } else {
+                    legacyCallback(false)
+                    legacyFile = null
+                }
+            }
+        ) {
+            Text(stringResource(R.string.legacy_install_unknown_sources_info))
+        }
+    }
+
     val scrollState = rememberScrollState()
     LaunchedEffect(log.size) {
         scrollState.scrollTo(scrollState.maxValue)
@@ -131,7 +211,7 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
     BackHandler {
-        if (completed && sfFile == null) {
+        if (completed && sfFile == null && legacyFile == null) {
             safeNavigate(lifecycleOwner) {
                 navigator.popBackStack()
             }
@@ -144,7 +224,13 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
     LaunchedEffect(true) {
         if (PatcherLauncher.patching) return@LaunchedEffect
         val patcher = PatcherLauncher.patcher!!
-        patcher.setCallbacks(::onLog, ::onProgress, ::onTask, ::onSaveFile)
+        patcher.setCallbacks(
+            onLog = ::onLog,
+            onProgress = ::onProgress,
+            onTask = ::onTask,
+            onSaveFile = ::onSaveFile,
+            onInstallLegacy = ::onInstallLegacy
+        )
         PatcherLauncher.runPatcher(context) { success ->
             completed = true
             log.add(if (success) patchSuccessMsg else patchFailedMsg)
@@ -162,7 +248,7 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
         topBar = {
             TopBar(
                 title = if (completed) completedStr else workingStr,
-                navigationIcon = { BackButton(navigator, enabled = completed && sfFile == null) }
+                navigationIcon = { BackButton(navigator, enabled = completed && sfFile == null && legacyFile == null) }
             )
         }
     ) { innerPadding ->

@@ -54,9 +54,13 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
     var showShizukuNotAvailableDialog by remember { mutableStateOf(false) }
 
     // Options
-    // 0=Save, 1=Normal, 2=Direct, 3=Shizuku
+    // 0=Save, 1=Normal, 2=Direct, 3=Shizuku, 4=Legacy
     val installMethod = rememberSaveable { mutableIntStateOf(1) }
     var fileUris by rememberSaveable { mutableStateOf<Array<Uri>>(arrayOf()) }
+    var mergeApksPref by remember { mutableStateOf(false) }
+    LaunchedEffect(true) {
+        mergeApksPref = context.getPrefValue(PrefKey.MERGE_APKS) as Boolean
+    }
     val fileSelectLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val data = it.data ?: return@rememberLauncherForActivityResult
 
@@ -188,7 +192,9 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                                 install = installMethod.intValue == 1,
                                 directInstall = installMethod.intValue == 2,
                                 shizukuInstall = false,
-                                customSoUri = if (!useLatestVersion) customSoUri else null
+                                customSoUri = if (!useLatestVersion) customSoUri else null,
+                                mergeApks = mergeApksPref && installMethod.intValue == 0,
+                                legacyInstall = installMethod.intValue == 4
                             )
                         )
                     }
@@ -259,7 +265,8 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                 stringResource(R.string.save_patched_file),
                 stringResource(R.string.normal_install),
                 stringResource(R.string.direct_install),
-                stringResource(R.string.shizuku_install)
+                stringResource(R.string.shizuku_install),
+                stringResource(R.string.legacy_install)
             ),
             state = installMethod,
             choiceContent = { index, text ->

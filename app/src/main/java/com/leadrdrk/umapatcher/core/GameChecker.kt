@@ -4,7 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 
 object GameChecker {
-    private val packageNames = arrayOf(
+    val packageNames = arrayOf(
         "jp.co.cygames.umamusume",
         "com.komoe.kmumamusumegp",
         "com.komoe.umamusumeofficial",
