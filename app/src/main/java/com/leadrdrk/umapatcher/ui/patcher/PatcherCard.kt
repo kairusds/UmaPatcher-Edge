@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PatcherCard(
     label: String,
-    rootRequired: Boolean = false,
     icon: @Composable () -> Unit,
     buttons: @Composable RowScope.() -> Unit,
     content: @Composable () -> Unit

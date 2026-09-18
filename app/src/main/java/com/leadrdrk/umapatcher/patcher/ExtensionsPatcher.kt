@@ -12,6 +12,8 @@ internal object ExtensionsPatcher {
 
     const val DEX_ASSET_NAME = "extensions.dex"
 
+    private const val INTERNAL_FILES_MARKER_ASSET = "assets/hachimi_internal_files"
+
     private const val PROVIDER_CLASS_NAME = "com.leadrdrk.umapatcher.documentsprovider.InternalDataDocumentsProvider"
 
     private const val ATTR_NAME = 0x01010003
@@ -41,6 +43,19 @@ internal object ExtensionsPatcher {
 
         val dexName = nextDexEntryName(extractDir)
         extractDir.resolve(dexName).writeBytes(providerDex)
+
+        return true
+    }
+
+    fun addInternalFilesMarker(extractDir: File): Boolean {
+        val markerFile = extractDir.resolve(INTERNAL_FILES_MARKER_ASSET)
+
+        if (markerFile.exists()) {
+            return false
+        }
+
+        markerFile.parentFile?.mkdirs()
+        markerFile.writeBytes(ByteArray(0))
 
         return true
     }

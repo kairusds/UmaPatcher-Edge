@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInstaller
+import androidx.core.content.IntentCompat
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -13,7 +14,9 @@ class PackageInstallerStatusReceiver : BroadcastReceiver() {
         val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, -999)
         when (status) {
             PackageInstaller.STATUS_PENDING_USER_ACTION -> {
-                val confirmationIntent = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
+                val confirmationIntent = IntentCompat.getParcelableExtra(
+                    intent, Intent.EXTRA_INTENT, Intent::class.java
+                )
                 if (confirmationIntent != null) {
                     context.startActivity(confirmationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }

@@ -21,7 +21,7 @@
 
     <!-- Settings -->
     <string name="check_for_updates_desc">Occasionally check for updates when the app starts.</string>
-    <string name="hachimi_repo">Hachimi repo</string>
+    <string name="hachimi_repo">Hachimi Edge repo</string>
     <string name="export_signing_key">Export signing key</string>
     <string name="export_signing_key_desc">Export the BKS keystore used to sign APK files.</string>
     <string name="import_signing_key">Import signing key</string>
@@ -34,7 +34,7 @@
     <string name="signing_key_disabled_universal">Disabled because the universal signing key is enabled.</string>
     <string name="force_redownload_mod">Force redownload Hachimi</string>
     <string name="force_redownload_mod_desc">Invalidate the existing libraries and force them to be redownloaded.</string>
-    <string name="force_redownload_mod_notice">Hachimi will be redownloaded on the next app patching session.</string>
+    <string name="force_redownload_mod_notice">Hachimi Edge will be redownloaded on the next app patching session.</string>
     <string name="plugins_title">Plugins</string>
     <string name="add_plugin">Add plugin</string>
     <string name="remove_plugin">Remove</string>
@@ -45,7 +45,7 @@
     <string name="plugin_warning">Warning: Plugins can steal your game account or execute malicious code. Only install from trusted sources.</string>
 
     <!-- About -->
-    <string name="app_desc">UM:PD Hachimi mod patching tool for Android.</string>
+    <string name="app_desc">UM:PD Hachimi Edge mod patching tool for Android.</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="open_source_licenses">Open source licenses</string>
     <string name="view_source_code">View source code</string>
@@ -54,7 +54,7 @@
     <!-- Custom .so file picker -->
     <string name="use_latest_version">Use latest version</string>
     <string name="use_latest_version_desc">Automatically use the latest Hachimi Edge version. Disable to manually pick a .so file.</string>
-    <string name="select_custom_so">Tap here to select Hachimi Edge file</string>
+    <string name="select_custom_so">Tap here to select Hachimi Edge .so file</string>
     <string name="no_custom_so_selected">No file selected</string>
     <string name="custom_so_supported_files">Supported files: .so</string>
     <string name="copying_custom_so">Copying Hachimi Edge .so file</string>
@@ -112,21 +112,27 @@
 
     <!-- Export internal data provider -->
     <string name="export_internal_data_provider">Export internal data provider</string>
-    <string name="export_internal_data_provider_desc">Add a documents provider to the patched APK that allows file managers and other apps to access its internal data directory.</string>
+    <string name="export_internal_data_provider_desc">Add a documents provider to the patched APK that allows file managers and other apps to access its internal folder (/data/data).</string>
+
+    <!-- Use internal files directory -->
+    <string name="use_internal_files_dir">Use internal files directory</string>
+    <string name="use_internal_files_dir_desc">Makes Hachimi Edge use the game\'s internal data directory (/data/data) instead of the old /Android/media folder for faster file speeds. \n\nDOWNSIDE: The internal folder (/data/data) is only accessible from file managers if \"Export internal data provider\" is enabled or if you are rooted. \n\nThis option is also required if you get error 2 on Android 16 QPR2+ or Android 17+.</string>
 
     <!-- AppPatcher -->
     <string name="syncing_app_libs">Syncing Hachimi libraries</string>
     <string name="downloading_file">Downloading file: %s</string>
     <string name="failed_to_download_app_libs">Failed to download Hachimi libraries.</string>
     <string name="failed_to_sync_app_libs">Failed to sync Hachimi libraries. Skipping.</string>
-    <string name="app_lib_updated">Hachimi has been updated.</string>
-    <string name="using_app_lib_ver">Using Hachimi %s</string>
+    <string name="app_lib_updated">Hachimi Edge has been updated.</string>
+    <string name="using_app_lib_ver">Using Hachimi Edge %s</string>
     <string name="corrupted_file_abort_download">Corrupted file detected, aborting download.</string>
     <string name="signing_apk_file">Signing APK file: %s</string>
     <string name="patching_documents_provider">Adding internal data documents provider</string>
     <string name="documents_provider_patched">Internal data documents provider added.</string>
     <string name="documents_provider_already_patched">Internal data documents provider is already present.</string>
     <string name="documents_provider_patch_failed">Failed to add internal data documents provider.</string>
+    <string name="internal_files_marker_added">Internal files directory marker added.</string>
+    <string name="insufficient_storage">Not enough storage space to patch. Free up at least %s and try again.</string>
     <string name="apk_files_missing_lib">Invalid or incomplete APK files (missing native libraries)</string>
     <string name="app_lib_dir_not_found">No app lib directory was found. Nothing has been installed.</string>
     <string name="invalid_apk_file">Invalid APK file.</string>

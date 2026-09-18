@@ -8,6 +8,9 @@ import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.StatFs
+import android.provider.OpenableColumns
+import android.text.format.Formatter
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import com.leadrdrk.umapatcher.R
@@ -79,6 +82,9 @@ class AppPatcher(
         if (directInstall && !isDirectInstallAllowed(context))
             return false
 
+        if (!directInstall && fileUris.isNotEmpty() && !checkStorageSpace(context))
+            return false
+
         val libVer = if (customSoUri != null) {
             runBlocking { copyCustomSo(context) } ?: return false
             "custom"
@@ -98,6 +104,31 @@ class AppPatcher(
         else if (fileUris.size > 1) {
             return runBlocking { runSplitApks(context) }
         }
+
+        return false
+    }
+
+    private fun checkStorageSpace(context: Context): Boolean {
+        var totalSize = 0L
+        for (uri in fileUris) {
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+                    if (sizeIndex >= 0 && !it.isNull(sizeIndex))
+                        totalSize += it.getLong(sizeIndex)
+                }
+            }
+        }
+        if (totalSize <= 0L) return true
+
+        // Worst case: extracted files + rebuilt APK + signed copy
+        val requiredBytes = totalSize * 3
+        val availableBytes = StatFs(context.workDir.path).availableBytes
+        if (availableBytes >= requiredBytes) return true
+
+        val missingSpace = Formatter.formatFileSize(context, requiredBytes - availableBytes)
+        log(context.getString(R.string.insufficient_storage).format(missingSpace))
 
         return false
     }
@@ -504,8 +535,7 @@ class AppPatcher(
 
         val apk = ApkModule(zipEntryMap)
         var writtenFiles = 0
-        apk.writeApk(file) { path, _, _ ->
-            log(path)
+        apk.writeApk(file) { _, _, _ ->
             progress = ++writtenFiles / fileCount.toFloat()
         }
 
@@ -539,6 +569,10 @@ class AppPatcher(
     }
 
     private suspend fun patchExtensions(context: Context, extractDir: File) {
+        val useInternalFilesDir = context.getPrefValue(PrefKey.USE_INTERNAL_FILES_DIR) as Boolean
+        if (useInternalFilesDir && ExtensionsPatcher.addInternalFilesMarker(extractDir))
+            log(context.getString(R.string.internal_files_marker_added))
+
         if (!(context.getPrefValue(PrefKey.EXPORT_INTERNAL_DATA_PROVIDER) as Boolean)) return
 
         task = context.getString(R.string.patching_documents_provider)
