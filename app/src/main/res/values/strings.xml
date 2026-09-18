@@ -20,6 +20,7 @@
     <string name="app_patcher_supported_files">Supported files: APK / Split APKs, XAPK</string>
 
     <!-- Settings -->
+    <string name="check_for_updates_opt">Check for updates</string>
     <string name="check_for_updates_desc">Occasionally check for updates when the app starts.</string>
     <string name="hachimi_repo">Hachimi Edge repo</string>
     <string name="export_signing_key">Export signing key</string>

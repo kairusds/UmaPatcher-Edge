@@ -157,7 +157,7 @@ fun SettingsScreen() {
             if (!configRead) return@Column
 
             BooleanOption(
-                title = stringResource(R.string.check_for_updates),
+                title = stringResource(R.string.check_for_updates_opt),
                 desc = stringResource(R.string.check_for_updates_desc),
                 state = checkForUpdates
             )
