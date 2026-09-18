@@ -21,10 +21,10 @@
 
     <!-- Settings -->
     <string name="check_for_updates_desc">Tignan kung may update kapag simulan ang app</string>
-    <string name="hachimi_repo">Hachimi repo</string>
+    <string name="hachimi_repo">Hachimi Edge repo</string>
     <string name="export_signing_key">I-export ang signing key</string>
     <string name="export_signing_key_desc">I-export ang BKS keystore na ginagamit para i-sign ang APK files.</string>
-    <string name="import_signing_key">I-mport signing key</string>
+    <string name="import_signing_key">I-import ang signing key</string>
     <string name="import_signing_key_desc">Mag-import ng BKS keystore na gagamitin para i-sign ang APK files.</string>
     <string name="no_keystore_to_export">Walang keystore na ie-export.</string>
     <string name="keystore_imported">Na-import ang keystore</string>
@@ -34,7 +34,7 @@
     <string name="signing_key_disabled_universal">Naka-disable dahil naka-enable ang universal signing key.</string>
     <string name="force_redownload_mod">Pwersahang i-redownload ang Hachimi</string>
     <string name="force_redownload_mod_desc">I-invalidate ang mga umiiral na libraries at pilitin silang i-redownloaded.</string>
-    <string name="force_redownload_mod_notice">Ida-ddownload muli ang Hachimi sa susunod na app patching session.</string>
+    <string name="force_redownload_mod_notice">Ida-download muli ang Hachimi Edge sa susunod na app patching session.</string>
     <string name="plugins_title">Mga Plugin</string>
     <string name="add_plugin">Magdagdag ng plugin</string>
     <string name="remove_plugin">Tanggalin</string>
@@ -45,7 +45,7 @@
     <string name="plugin_warning">Babala: Maaaring nakawan ng mga plugin ang iyong account o mag-execute ng mapanganib na code. Mag-install lang mula sa pinagkakatiwalaang pinagmulan.</string>
 
     <!-- About -->
-    <string name="app_desc">UM:PD Hachimi mod patching tool para sa Android.</string>
+    <string name="app_desc">UM:PD Hachimi Edge mod patching tool para sa Android.</string>
     <string name="check_for_updates">Tignan kung may update</string>
     <string name="open_source_licenses">Open source licenses</string>
     <string name="view_source_code">Tignan ang source code</string>
@@ -54,7 +54,7 @@
     <!-- Custom .so file picker -->
     <string name="use_latest_version">Gamitin ang latest version</string>
     <string name="use_latest_version_desc">Awtomatikong gamitin ang pinakabagong Hachimi Edge version. I-disable para manwal na pumili ng .so file.</string>
-    <string name="select_custom_so">I-tap dito para pumili ng Hachimi Edge file</string>
+    <string name="select_custom_so">I-tap dito para pumili ng Hachimi Edge .so file</string>
     <string name="no_custom_so_selected">Walang piniling file.</string>
     <string name="custom_so_supported_files">Mga sinusuportahang file: .so</string>
     <string name="copying_custom_so">Kinokopya ang Hachimi Edge .so file</string>
@@ -77,12 +77,12 @@
     <string name="shizuku_unavailable_info">Ang Shizuku ay alinman hindi naka-install o hindi tumatakbo. Paki-install at simulan ang Shizuku para gamitin ang install method na ito. Gusto mo ba buksan ang download page para sa Shizuku?</string>
 
     <!-- Patching -->
-    <string name="working">Working...</string>
+    <string name="working">Isinasagawa...</string>
     <string name="completed">Tapos na</string>
     <string name="patch_success_msg">[Matagumpay na na-patch]</string>
     <string name="patch_failed_msg">[Nabigong i-patch]</string>
     <string name="direct_install_unavailable">Maaari lamang gamitin ang direktang install kapag naka-install ang laro..</string>
-    <string name="root_required">Kailangan ang root para sa operasyong ito.</string>
+    <string name="root_required">Kailangan mo ng root para gamitin ang paraang ito.</string>
     <string name="failed_to_read_file">Nabigong i-read ang file: %s</string>
     <string name="failed_to_move_file">Nabigong ilipat ang file: %s</string>
     <string name="copying_file">Kinokopya ang file</string>
@@ -94,25 +94,33 @@
     <string name="file_saved">Na-save ang file.</string>
     <string name="failed_to_save_file">Nabigong i-save ang file.</string>
     <string name="extracting_file">Ine-extract ang file: %s</string>
-    <string name="creating_file">Ginagawa ang file file: %s</string>
-    <string name="cleaning_up">Cleaning up</string>
+    <string name="creating_file">Ginagawa ang file: %s</string>
+    <string name="cleaning_up">Naglilinis</string>
 
     <!-- Merge split APKs -->
     <string name="merge_apks">I-merge ang split APKs sa iisang APK</string>
     <string name="merge_apks_desc">Kapag ginagamit ang \"Save patched file\" at may piniling split APK, Magiging nag-iisang APK file ang output sa halip ng XAPK.</string>
     <string name="merging_apks">Sinasama ang mga split APK</string>
     <string name="merge_no_base">Walang base APK na nahanap sa mga piniling split. Hindi maisasama.</string>
-    <string name="merge_failed">Failed to merge split APKs: %s</string>
+    <string name="merge_failed">Nabigong isama ang mga split apk: %s</string>
     <string name="merge_sanitizing_manifest">Sina-sanitize ang merged manifest</string>
     <string name="merge_writing_apk">Sine-save ang merged APK</string>
+
+    <!-- Export internal data provider -->
+    <string name="export_internal_data_provider">I-export ang internal data provider</string>
+    <string name="export_internal_data_provider_desc">Nagdadagdag ng isang documents provider sa patched APK na nagbibigay-daan sa mga file manager at ibang app na ma-access ang internal folder ng laro (/data/data).</string>
+
+    <!-- Use internal files directory -->
+    <string name="use_internal_files_dir">Gamitin ang internal files directory</string>
+    <string name="use_internal_files_dir_desc">Gagawin ang Hachimi Edge na gamitin ang internal data directory (/data/data) ng laro sa halip ng lumang Android/media folder para mas-mabilis ang mga operasyon sa file. \n\nISANG DOWNSIDE: Naa-access lang ang internal folder mula sa mga file manager kapag pinagana ang \"I-export ang internal data provider\" o kung naka-root ka. \n\nKinakailangan rin ang opsyong ito kapag makakakuha ka ng \"os error 2\" sa Android 16 QPR2 o mas-mataas.</string>
 
     <!-- AppPatcher -->
     <string name="syncing_app_libs">Sini-sync ang Hachimi libraries</string>
     <string name="downloading_file">Dina-download ang file: %s</string>
     <string name="failed_to_download_app_libs">Hindi ma-download ang Hachimi libraries.</string>
     <string name="failed_to_sync_app_libs">Hindi ma-sync ang Hachimi libraries. Lalaktawan.</string>
-    <string name="app_lib_updated">Na-update ang Hachimi.</string>
-    <string name="using_app_lib_ver">Ginagamit ang Hachimi %s</string>
+    <string name="app_lib_updated">Na-update ang Hachimi Edge.</string>
+    <string name="using_app_lib_ver">Ginagamit ang Hachimi Edge %s</string>
     <string name="corrupted_file_abort_download">May na-detect na corrupted file, ititigil ang download.</string>
     <string name="signing_apk_file">Nilalagdaan ang APK file: %s</string>
     <string name="apk_files_missing_lib">Invalid o di-kumpletong APK files (nawawalang native libraries)</string>
@@ -120,8 +128,8 @@
     <string name="invalid_apk_file">Di-wastong APK file.</string>
     <string name="invalid_apk_file_name">Di-wastong APK file: %s</string>
     <string name="detected_apk_split">Na-detect ang APK split type: %s</string>
-    <string name="libraries_patched">Libraries patched: %s</string>
-    <string name="plugins_patched">Plugins patched: %s</string>
+    <string name="libraries_patched">Pina-patch na library: %s</string>
+    <string name="plugins_patched">Pina-patch na plugin: %s</string>
     <string name="failed_to_install_plugin">Nabigong i-install ang plugin: %s</string>
     <string name="invalid_apk_splits_duplicate">Invalid APK splits; may ibang %s APK na nahanap.</string>
     <string name="apk_splits_missing_base">Nawawala ang base APK mula sa APK splits.</string>
@@ -144,6 +152,8 @@
     <string name="legacy_install_unknown_sources_required">Kailangan ng pahintulot</string>
     <string name="legacy_install_unknown_sources_info">Kinakailangan ng Android na ibigay ang pahintulot na "Mag-install ng di-kilalang app" ("Install unknown apps") bago nito mabuksan ang system package installer. Pindutin ang OK para buksan ang settings page at ibigay ang pahintulot para sa UmaPatcher Edge, at bumalik dito pagkatapos ibigay ang pahintulot.</string>
     <string name="legacy_install_failed">Nabigong buksan ang system package installer.</string>
+    <string name="internal_files_marker_added">Dinagdag ang internal files directory marker.</string>
+    <string name="insufficient_storage">Walang sapat na espasyo sa storage para mag-patch. Magbakante ng kahit %s at subukan ulit.</string>
 
     <!-- Other -->
     <string name="cancel">Kanselahin</string>
