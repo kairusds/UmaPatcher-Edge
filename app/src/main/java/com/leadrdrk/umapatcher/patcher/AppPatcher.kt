@@ -32,6 +32,7 @@ import com.reandroid.archive.FileInputSource
 import com.reandroid.archive.WriteProgress
 import com.reandroid.archive.ZipEntryMap
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.resume
@@ -468,6 +469,8 @@ class AppPatcher(
             if (isInvalidSplit(splitType)) return false
             processed = true
             processedSplits?.put(splitType, true)
+
+            patchExtensions(context, extractDir)
         }
 
         if (!processed) {
@@ -533,6 +536,29 @@ class AppPatcher(
 
         // we're finally done :')
         return true
+    }
+
+    private suspend fun patchExtensions(context: Context, extractDir: File) {
+        if (!(context.getPrefValue(PrefKey.EXPORT_INTERNAL_DATA_PROVIDER) as Boolean)) return
+
+        task = context.getString(R.string.patching_documents_provider)
+        progress = -1f
+
+        try {
+            val providerDex = context.assets
+                .open(ExtensionsPatcher.DEX_ASSET_NAME)
+                .use { it.readBytes() }
+            val injected = ExtensionsPatcher.patchExtractedApk(extractDir, providerDex)
+            log(context.getString(
+                if (injected) R.string.documents_provider_patched
+                else R.string.documents_provider_already_patched
+            ))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            log(context.getString(R.string.documents_provider_patch_failed))
+            logException(e)
+        }
     }
 
     private fun installPlugins(context: Context, libDir: File, isDirectInstall: Boolean = false) {

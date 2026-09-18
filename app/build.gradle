@@ -81,6 +81,132 @@ aboutLibraries {
     configPath = "config"
 }
 
+def extensionsSrcDir = file('src/main/extensions')
+def extensionsSdkDir = {
+    def sdkDir = android.hasProperty('sdkDirectory') ? android.sdkDirectory : null
+    if (sdkDir != null) {
+        return sdkDir
+    }
+    def localProps = rootProject.file('local.properties')
+    if (localProps.isFile()) {
+        String configured = null
+        localProps.eachLine { line ->
+            if (configured == null && line.startsWith('sdk.dir=')) {
+                configured = line.substring('sdk.dir='.length()).trim()
+            }
+        }
+        if (configured != null) {
+            return file(configured)
+        }
+    }
+    String envDir = System.getenv('ANDROID_HOME') ?: System.getenv('ANDROID_SDK_ROOT')
+    if (envDir != null) {
+        return file(envDir)
+    }
+    throw new GradleException('extensions dex: Android SDK directory could not be resolved')
+}()
+
+def extensionsPlatformJar = {
+    String compileSdk = android.compileSdkVersion?.toString() ?: 'android-34'
+    if (!compileSdk.startsWith('android-')) {
+        compileSdk = "android-${compileSdk}"
+    }
+    def jar = new File(new File(new File(extensionsSdkDir, 'platforms'), compileSdk), 'android.jar')
+    if (!jar.isFile()) {
+        throw new GradleException("extensions dex: platform jar not found: ${jar}")
+    }
+    jar
+}()
+
+def extensionsD8Jar = {
+    def buildToolsRoot = new File(extensionsSdkDir, 'build-tools')
+    List<File> candidates = []
+    if (buildToolsRoot.isDirectory()) {
+        buildToolsRoot.listFiles().each { dir ->
+            def jar = new File(new File(dir, 'lib'), 'd8.jar')
+            if (dir.isDirectory() && jar.isFile()) {
+                candidates += jar
+            }
+        }
+    }
+    if (candidates.isEmpty()) {
+        throw new GradleException("extensions dex: no d8.jar found in any build-tools version under ${buildToolsRoot}; install the Android SDK build-tools package")
+    }
+    candidates.toSorted { left, right ->
+        org.gradle.util.VersionNumber.parse(left.parentFile.parentFile.name) <=>
+                org.gradle.util.VersionNumber.parse(right.parentFile.parentFile.name)
+    }.last()
+}()
+
+def extensionsClassesDir = layout.buildDirectory.dir('extensions/classes')
+def extensionsDexDir = layout.buildDirectory.dir('extensions/dex')
+def extensionsAssetsDir = layout.buildDirectory.dir('generated/extensionsAssets')
+
+def compileExtensionsJava = tasks.register('compileExtensionsJava', JavaCompile) {
+    source = extensionsSrcDir
+    include '**/*.java'
+    classpath = files(extensionsPlatformJar)
+    destinationDirectory = extensionsClassesDir
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+def dexExtensions = tasks.register('dexExtensions', JavaExec) {
+    dependsOn compileExtensionsJava
+    mainClass = 'com.android.tools.r8.D8'
+    classpath = files(extensionsD8Jar)
+    inputs.dir extensionsClassesDir
+    outputs.dir extensionsDexDir
+    doFirst {
+        def dexOut = extensionsDexDir.get().asFile
+        dexOut.mkdirs()
+        def classesRoot = extensionsClassesDir.get().asFile
+        List<File> classFiles = []
+        classesRoot.eachFileRecurse { file ->
+            if (file.isFile() && file.name.endsWith('.class')) {
+                classFiles += file
+            }
+        }
+        classFiles = classFiles.toSorted { left, right -> left.name <=> right.name }
+        if (classFiles.isEmpty()) {
+            throw new GradleException("extensions dex: no class files under ${classesRoot}")
+        }
+        args(['--release', '--min-api', '21', '--lib', extensionsPlatformJar.absolutePath,
+              '--output', dexOut.absolutePath] + classFiles.collect { it.absolutePath })
+    }
+}
+
+def generateExtensionsAsset = tasks.register('generateExtensionsAsset', Copy) {
+    dependsOn dexExtensions
+    from(extensionsDexDir) {
+        include 'classes.dex'
+        rename { 'extensions.dex' }
+    }
+    into extensionsAssetsDir
+}
+
+android.sourceSets.main.assets.srcDirs += extensionsAssetsDir.get().asFile
+tasks.matching { t ->
+    (t.name.startsWith('merge') && t.name.endsWith('Assets')) ||
+            t.name.toLowerCase(Locale.ROOT).contains('lint')
+}.configureEach {
+    dependsOn generateExtensionsAsset
+}
+
+def cleanStaleExtensionsAsset = tasks.register('cleanStaleExtensionsAsset') {
+    outputs.upToDateWhen { false }
+    doLast {
+        def stale = file('src/main/assets/extensions.dex')
+        if (stale.isFile()) {
+            logger.lifecycle("extensions: removing stale asset ${stale} (superseded by build-time generation)")
+            stale.delete()
+        }
+    }
+}
+
+generateExtensionsAsset.configure { dependsOn cleanStaleExtensionsAsset }
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation "androidx.compose.ui:ui:$compose_version"

@@ -11,3 +11,6 @@ local.properties
 *.keystore
 *.jks
 .envrc
+
+# Generated extensions dex
+/app/src/main/assets/extensions.dex

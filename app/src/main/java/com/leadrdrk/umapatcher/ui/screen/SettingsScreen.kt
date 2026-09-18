@@ -44,6 +44,7 @@ fun SettingsScreen() {
     val useLatestVersion = remember { mutableStateOf(true) }
     val useUniversalSigningKey = remember { mutableStateOf(false) }
     val mergeApks = remember { mutableStateOf(false) }
+    val exportInternalDataProvider = remember { mutableStateOf(false) }
     var configRead by remember { mutableStateOf(false) }
 
     val repoState = rememberDataStoreStringState(
@@ -123,12 +124,17 @@ fun SettingsScreen() {
         it[PrefKey.MERGE_APKS] = mergeApks.value
     }
 
+    PrefUpdateEffect(exportInternalDataProvider.value) {
+        it[PrefKey.EXPORT_INTERNAL_DATA_PROVIDER] = exportInternalDataProvider.value
+    }
+
     LaunchedEffect(true) {
         checkForUpdates.value = context.getPrefValue(PrefKey.CHECK_FOR_UPDATES) as Boolean
         appLibsVersion.value = context.getPrefValue(PrefKey.APP_LIBS_VERSION) as String
         useLatestVersion.value = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
         useUniversalSigningKey.value = context.getPrefValue(PrefKey.USE_UNIVERSAL_SIGNING_KEY) as Boolean
         mergeApks.value = context.getPrefValue(PrefKey.MERGE_APKS) as Boolean
+        exportInternalDataProvider.value = context.getPrefValue(PrefKey.EXPORT_INTERNAL_DATA_PROVIDER) as Boolean
         configRead = true
     }
 
@@ -160,6 +166,12 @@ fun SettingsScreen() {
                 title = stringResource(R.string.merge_apks),
                 desc = stringResource(R.string.merge_apks_desc),
                 state = mergeApks
+            )
+
+            BooleanOption(
+                title = stringResource(R.string.export_internal_data_provider),
+                desc = stringResource(R.string.export_internal_data_provider_desc),
+                state = exportInternalDataProvider
             )
 
             BooleanOption(

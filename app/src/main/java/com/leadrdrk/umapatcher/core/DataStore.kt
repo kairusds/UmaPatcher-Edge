@@ -22,6 +22,7 @@ object PrefKey {
     val USE_LATEST_VERSION = booleanPreferencesKey("use_latest_version")
     val USE_UNIVERSAL_SIGNING_KEY = booleanPreferencesKey("use_universal_signing_key")
     val MERGE_APKS = booleanPreferencesKey("merge_apks")
+    val EXPORT_INTERNAL_DATA_PROVIDER = booleanPreferencesKey("export_internal_data_provider")
 }
 
 val defaultValues = mapOf(
@@ -32,6 +33,7 @@ val defaultValues = mapOf(
     Pair(PrefKey.USE_LATEST_VERSION, true),
     Pair(PrefKey.USE_UNIVERSAL_SIGNING_KEY, false),
     Pair(PrefKey.MERGE_APKS, false),
+    Pair(PrefKey.EXPORT_INTERNAL_DATA_PROVIDER, true),
 )
 
 suspend fun Context.getPrefValue(key: Preferences.Key<*>): Any? {

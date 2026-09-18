@@ -110,6 +110,10 @@
     <string name="merge_sanitizing_manifest">Sanitizing merged manifest</string>
     <string name="merge_writing_apk">Writing merged APK</string>
 
+    <!-- Export internal data provider -->
+    <string name="export_internal_data_provider">Export internal data provider</string>
+    <string name="export_internal_data_provider_desc">Add a documents provider to the patched APK that allows file managers and other apps to access its internal data directory.</string>
+
     <!-- AppPatcher -->
     <string name="syncing_app_libs">Syncing Hachimi libraries</string>
     <string name="downloading_file">Downloading file: %s</string>
@@ -119,6 +123,10 @@
     <string name="using_app_lib_ver">Using Hachimi %s</string>
     <string name="corrupted_file_abort_download">Corrupted file detected, aborting download.</string>
     <string name="signing_apk_file">Signing APK file: %s</string>
+    <string name="patching_documents_provider">Adding internal data documents provider</string>
+    <string name="documents_provider_patched">Internal data documents provider added.</string>
+    <string name="documents_provider_already_patched">Internal data documents provider is already present.</string>
+    <string name="documents_provider_patch_failed">Failed to add internal data documents provider.</string>
     <string name="apk_files_missing_lib">Invalid or incomplete APK files (missing native libraries)</string>
     <string name="app_lib_dir_not_found">No app lib directory was found. Nothing has been installed.</string>
     <string name="invalid_apk_file">Invalid APK file.</string>
