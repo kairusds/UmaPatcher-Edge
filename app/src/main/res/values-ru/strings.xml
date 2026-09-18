@@ -1,0 +1,170 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
+    <string name="home">Главная</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О приложении</string>
+
+    <!-- Home -->
+    <string name="game_installed">Игра установлена</string>
+    <string name="game_not_installed">Игра не установлена</string>
+    <string name="game_not_installed_info">Некоторые функции могут быть недоступны.</string>
+    <string name="package_name_prefix">"Пакет: "</string>
+    <string name="version_name_prefix">"Версия: "</string>
+    <string name="tap_to_select_app">Нажмите, чтобы выбрать другое приложение</string>
+
+    <string name="app_patcher_label">Патчинг приложения</string>
+    <string name="patch">Пропатчить</string>
+    <string name="select_an_app">Выберите приложение</string>
+    <string name="n_files_selected">Выбрано файлов: %d</string>
+    <string name="tap_to_select_file">Нажмите, чтобы выбрать файл(ы)</string>
+    <string name="app_patcher_supported_files">Поддерживаемые файлы: APK / сплит-APK, XAPK</string>
+
+    <!-- Settings -->
+    <string name="check_for_updates_opt">Проверять обновления</string>
+    <string name="check_for_updates_desc">Периодически проверять наличие обновлений при запуске приложения.</string>
+    <string name="hachimi_repo">Репозиторий Hachimi Edge</string>
+    <string name="export_signing_key">Экспорт ключа подписи</string>
+    <string name="export_signing_key_desc">Экспортировать хранилище ключей BKS, используемое для подписания APK-файлов.</string>
+    <string name="import_signing_key">Импорт ключа подписи</string>
+    <string name="import_signing_key_desc">Импортировать хранилище ключей BKS, которое будет использоваться для подписания APK-файлов.</string>
+    <string name="no_keystore_to_export">Нет хранилища ключей для экспорта.</string>
+    <string name="keystore_imported">Хранилище ключей импортировано.</string>
+    <string name="failed_to_import_keystore">Не удалось импортировать хранилище ключей.</string>
+    <string name="universal_signing_key">Универсальный ключ подписи</string>
+    <string name="universal_signing_key_desc">Подписывать пропатченные APK предустановленным универсальным ключом вместо использования отдельного хранилища ключей для вашего устройства. Опции импорта/экспорта ключа подписи будут игнорированы.\n\nПРЕДУПРЕЖДЕНИЕ: Если включить эту опцию, все пропатченные APK будут иметь один ключ подписи. Любой, у кого есть этот ключ, может подписывать вредоносные APK, которые смогут устанавливаться поверх ваших. Используйте эту опцию на свой страх и риск.</string>
+    <string name="signing_key_disabled_universal">Недоступно, поскольку включен универсальный ключ подписи.</string>
+    <string name="force_redownload_mod">Принудительно перезагрузить Hachimi</string>
+    <string name="force_redownload_mod_desc">Сделать существующие библиотеки недействительными и принудительно загрузить их заново.</string>
+    <string name="force_redownload_mod_notice">Hachimi Edge будет загружен заново при следующем патчинге приложения.</string>
+    <string name="plugins_title">Плагины</string>
+    <string name="add_plugin">Добавить плагин</string>
+    <string name="remove_plugin">Удалить</string>
+    <string name="no_plugins">Нет добавленных плагинов.</string>
+    <string name="plugin_added">Плагин добавлен.</string>
+    <string name="plugin_removed">Плагин удален.</string>
+    <string name="failed_to_add_plugin">Не удалось удалить плагин.</string>
+    <string name="plugin_warning">Предупреждение: Плагины могут красть ваш игровой аккаунт или выполнять вредоносный код. Устанавливайте плагины только из доверенных источников.</string>
+
+    <!-- About -->
+    <string name="app_desc">Утилита для патчинга Hachimi Edge для UM:PD на Android.</string>
+    <string name="check_for_updates">Проверить обновления</string>
+    <string name="open_source_licenses">Лицензии открытого исходного кода</string>
+    <string name="view_source_code">Просмотреть исходный код</string>
+    <string name="support_me">Поддержать на Ko-fi</string>
+
+    <!-- Custom .so file picker -->
+    <string name="use_latest_version">Использовать последнюю версию</string>
+    <string name="use_latest_version_desc">Автоматически использовать последнюю версию Hachimi Edge. Отключите, чтобы вручную выбирать .so-файл.</string>
+    <string name="select_custom_so">Нажмите, чтобы выбрать .so-файл Hachimi Edge</string>
+    <string name="no_custom_so_selected">Файл не выбран</string>
+    <string name="custom_so_supported_files">Поддерживаемые файлы: .so</string>
+    <string name="copying_custom_so">Копирование .so-файла Hachimi Edge</string>
+    <string name="failed_to_read_custom_so">Не удалось прочитать .so-файл Hachimi Edge.</string>
+
+    <!-- Patcher options -->
+    <string name="install_method">Метод установки</string>
+    <string name="install_method_desc">Как вы хотите установить патч.</string>
+    <string name="direct_install">Прямая установка (требуется рут)</string>
+    <string name="save_patched_file">Сохранить пропатченный файл</string>
+    <string name="normal_install">Обычная установка</string>
+    <string name="shizuku_install">Установка через Shizuku</string>
+    <string name="shizuku_install_available">(Доступна)</string>
+    <string name="shizuku_install_unavailable">(Недоступна)</string>
+    <string name="legacy_install">Установка в старом режиме</string>
+    <string name="legacy_install_unknown_sources_required">Требуется разрешение на установку неизвестных приложений</string>
+    <string name="legacy_install_unknown_sources_info">Android требует, чтобы для запуска установщика пакетов приложению было выдано разрешение на установку неизвестных приложений. Нажмите OK, чтобы открыть настройки, затем выдайте UmaPatcher Edge необходимое разрешение и вернитесь сюда.</string>
+    <string name="legacy_install_failed">Не удалось запустить системный установщик пакетов.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_permission_required">Требуется разрешение Shizuku</string>
+    <string name="shizuku_permission_info">Для установки через Shizuku, пожалуйста, выдайте приложению разрешение на использование Shizuku.</string>
+    <string name="shizuku_unavailable">Shizuku недоступен</string>
+    <string name="shizuku_unavailable_info">Shizuku не установлен или не запущен. Пожалуйста, установите и запустите Shizuku, чтобы использовать этот метод установки. Хотите открыть страницу загрузки Shizuku?</string>
+
+    <!-- Patching -->
+    <string name="working">Работаю...</string>
+    <string name="completed">Завершено</string>
+    <string name="patch_success_msg">[Патчинг завершён]</string>
+    <string name="patch_failed_msg">[Патчинг не удался]</string>
+    <string name="direct_install_unavailable">Прямая установка может использоваться, только если игра установлена.</string>
+    <string name="root_required">Для этой операции требуются рут-права.</string>
+    <string name="failed_to_read_file">Не удалось прочитать файл: %s</string>
+    <string name="failed_to_move_file">Не удалось переместить файл: %s</string>
+    <string name="copying_file">Копирование файла</string>
+    <string name="copying_file_name">Копирование файла: %s</string>
+    <string name="patching">Патчинг</string>
+    <string name="installing">Установка</string>
+    <string name="install_completed">Установка завершена.</string>
+    <string name="install_failed">Установка не удалась.</string>
+    <string name="file_saved">Файл сохранён.</string>
+    <string name="failed_to_save_file">Не удалось сохранить файл.</string>
+    <string name="extracting_file">Извлечение файла: %s</string>
+    <string name="creating_file">Создание файла: %s</string>
+    <string name="cleaning_up">Очистка</string>
+
+    <!-- Merge split APKs -->
+    <string name="merge_apks">Объединять сплит-APK в единый APK</string>
+    <string name="merge_apks_desc">Если используется \"Сохранить пропатченный файл\" и выбраны сплит-APK, вместо упаковки их в XAPK-файл будет создан единый APK.</string>
+    <string name="merging_apks">Объединение сплит-APK</string>
+    <string name="merge_no_base">Не удалось найти базовый APK среди выбранных сплитов. Объединение невозможно.</string>
+    <string name="merge_failed">Не удалось объединить сплит-APK: %s</string>
+    <string name="merge_sanitizing_manifest">Очистка объединённого манифеста</string>
+    <string name="merge_writing_apk">Сохранение объединённого APK</string>
+
+    <!-- Export internal data provider -->
+    <string name="export_internal_data_provider">Экспорт поставщика внутренних данных</string>
+    <string name="export_internal_data_provider_desc">Добавить в пропатченный APK поставщик документов, дающий файловым менеджерам и другим приложениям доступ к внутренней директории игры (/data/data).</string>
+
+    <!-- Use internal files directory -->
+    <string name="use_internal_files_dir">Использовать внутреннюю директорию данных</string>
+    <string name="use_internal_files_dir_desc">Hachimi Edge будет использовать внутреннюю директорию данных игры (/data/data) вместо старой папки /Android/media для ускорения доступа к файлам. \n\nМИНУС: Внутренняя директория (/data/data) будет доступна только через файловые менеджеры при включённой опции \"Экспорт поставщика внутренних данных\" или если у вас есть рут-права. \n\nТакже, эта опция обязательна, если вы сталкиваетесь с ошибкой 2 на Android 16 QPR2+ или Android 17+.</string>
+
+    <!-- AppPatcher -->
+    <string name="syncing_app_libs">Синхронизация библиотек Hachimi</string>
+    <string name="downloading_file">Загрузка файла: %s</string>
+    <string name="failed_to_download_app_libs">Не удалось загрузить библиотеки Hachimi.</string>
+    <string name="failed_to_sync_app_libs">Не удалось синхронизировать библиотеки Hachimi. Пропускаю.</string>
+    <string name="app_lib_updated">Hachimi Edge обновлён.</string>
+    <string name="using_app_lib_ver">Используется Hachimi Edge %s</string>
+    <string name="corrupted_file_abort_download">Файл повреждён, отмена загрузки.</string>
+    <string name="signing_apk_file">Подписание APK-файла: %s</string>
+    <string name="patching_documents_provider">Добавление поставщика документов внутренних данных</string>
+    <string name="documents_provider_patched">Поставщик документов внутренних данных добавлен.</string>
+    <string name="documents_provider_already_patched">Поставщик документов внутренних данных уже присутствует.</string>
+    <string name="documents_provider_patch_failed">Не удалось добавить поставщик документов внутренних данных.</string>
+    <string name="internal_files_marker_added">Метка директории внутренних данных добавлена.</string>
+    <string name="insufficient_storage">Недостаточно свободного места для патча. Освободите хотя бы %s и повторите попытку.</string>
+    <string name="apk_files_missing_lib">Неверные или неполные APK-файлы (отсутствуют нативные библиотеки)</string>
+    <string name="app_lib_dir_not_found">Не удалось найти папку библиотек приложения. Ничего не было установлено.</string>
+    <string name="invalid_apk_file">Неверный APK-файл.</string>
+    <string name="invalid_apk_file_name">Неверный APK-файл: %s</string>
+    <string name="detected_apk_split">Обнаружен тип сплита APK: %s</string>
+    <string name="libraries_patched">Пропатчены библиотеки: %s</string>
+    <string name="plugins_patched">Пропатчены плагины: %s</string>
+    <string name="failed_to_install_plugin">Не удалось установить плагин: %s</string>
+    <string name="invalid_apk_splits_duplicate">Неверные сплит-APK; обнаружен второй сплит %s.</string>
+    <string name="apk_splits_missing_base">В сплитах отсутствует базовый APK.</string>
+    <string name="invalid_split_apk_multiple_type">Неверный сплит-APK. Обнаружено несколько типов сплита в одном файле.</string>
+    <string name="detected_xapk_file">Обнаружен XAPK-файл.</string>
+    <string name="detected_apk_file">Обнаружен обычный APK-файл.</string>
+    <string name="patching_as_split_apks">Патчинг в виде сплит-APK.</string>
+    <string name="staging_app">Подготовка приложения</string>
+    <string name="removing_legacy_files">Удаление устарелых файлов</string>
+    <string name="shizuku_moving_files">Перемещение файлов для Shizuku</string>
+    <string name="external_cache_unavailable">Внешняя кеш-папка недоступна.</string>
+    <string name="copy_file_failed">Не удалось скопировать файл в %s</string>
+    <string name="shizuku_files_move_failed">Не удалось переместить файлы для Shizuku: %s</string>
+    <string name="shizuku_starting_service">Запуск службы Shizuku...</string>
+    <string name="shizuku_installing">Установка через Shizuku...</string>
+    <string name="shizuku_install_success">Установка через Shizuku завершена.</string>
+    <string name="shizuku_install_fail">Установка через Shizuku не удалась: %s</string>
+    <string name="shizuku_install_error">Установка через Shizuku завершилась с исключением: %s</string>
+    <string name="shizuku_install_fail_unexpected">Служба неожиданно отключилась.</string>
+
+    <!-- Other -->
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+    <string name="update_available">Доступно обновление</string>
+    <string name="update_available_desc">Доступна новая версия: %s\nОткрыть страницу загрузки?</string>
+    <string name="failed_to_check_for_updates">Не удалось проверить обновления</string>
+    <string name="no_updates_available">Нет доступных обновлений</string>
+</resources>
