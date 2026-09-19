@@ -58,6 +58,9 @@
     <string name="select_custom_so">Tap here to select Hachimi Edge .so file</string>
     <string name="no_custom_so_selected">No file selected</string>
     <string name="custom_so_supported_files">Supported files: .so</string>
+    <string name="custom_so_invalid_selection">Invalid .so file selection</string>
+    <string name="custom_so_multiple_selected">Only one .so file can be selected.</string>
+    <string name="custom_so_not_so_file">The selected file is not a .so file.</string>
     <string name="copying_custom_so">Copying Hachimi Edge .so file</string>
     <string name="failed_to_read_custom_so">Failed to read Hachimi Edge .so file.</string>
 
@@ -160,6 +163,12 @@
     <string name="shizuku_install_fail">Shizuku installation failed: %s</string>
     <string name="shizuku_install_error">Shizuku installation failed with an exception: %s</string>
     <string name="shizuku_install_fail_unexpected">Service disconnected unexpectedly.</string>
+
+    <!-- Deep link updater -->
+    <string name="deep_link_missing_files">Missing files</string>
+    <string name="deep_link_missing_apks">Select the APK file(s) to patch first.</string>
+    <string name="deep_link_missing_so">Select the Hachimi Edge .so file first.</string>
+    <string name="deep_link_missing_apks_and_so">Select the APK file(s) and the Hachimi Edge .so file first.</string>
 
     <!-- Other -->
     <string name="cancel">Cancel</string>

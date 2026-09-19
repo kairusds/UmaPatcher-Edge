@@ -1,5 +1,6 @@
 package com.leadrdrk.umapatcher.ui.patcher
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,13 +22,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
@@ -36,16 +40,26 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
 import com.leadrdrk.umapatcher.R
 import com.leadrdrk.umapatcher.MainActivity
 import com.leadrdrk.umapatcher.core.PrefKey
+import com.leadrdrk.umapatcher.core.dataStore
 import com.leadrdrk.umapatcher.core.getPrefValue
 import com.leadrdrk.umapatcher.patcher.AppPatcher
 import com.leadrdrk.umapatcher.shizuku.ShizukuState
 import com.leadrdrk.umapatcher.ui.component.RadioGroupOption
 import com.leadrdrk.umapatcher.ui.component.SimpleOkCancelDialog
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
+
+private const val INSTALL_METHOD_SAVE_DELAY_MILLIS = 5000L
 
 @Composable
 fun AppPatcherCard(navigator: DestinationsNavigator) {
@@ -58,47 +72,124 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
     val installMethod = rememberSaveable { mutableIntStateOf(1) }
     var fileUris by rememberSaveable { mutableStateOf<Array<Uri>>(arrayOf()) }
     var mergeApksPref by remember { mutableStateOf(false) }
+    var useLatestVersion by remember { mutableStateOf(true) }
+    var customSoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var customSoFileName by rememberSaveable { mutableStateOf<String?>(null) }
+    var customSoError by remember { mutableStateOf<String?>(null) }
+    var deepLinkMissingFiles by remember { mutableStateOf<String?>(null) }
+    var stateLoaded by remember { mutableStateOf(false) }
+    var installMethodLoaded by rememberSaveable { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val installMethodSaveScope = remember { CoroutineScope(SupervisorJob()) }
+
+    // Restore options and the persisted file URIs from preferences
     LaunchedEffect(true) {
         mergeApksPref = context.getPrefValue(PrefKey.MERGE_APKS) as Boolean
+        useLatestVersion = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
+
+        if (!installMethodLoaded) {
+            val savedInstallMethod = context.getPrefValue(PrefKey.INSTALL_METHOD) as Int
+            if (installMethod.intValue == 1) installMethod.intValue = savedInstallMethod
+            installMethodLoaded = true
+        }
+
+        if (fileUris.isEmpty()) {
+            val savedFileUris = (context.getPrefValue(PrefKey.FILE_URIS) as String)
+                .split('\n')
+                .filter { it.isNotEmpty() }
+                .map { uri -> Uri.parse(uri) }
+            val existingFileUris = mutableListOf<Uri>()
+            for (uri in savedFileUris) {
+                if (getFileName(context, uri) != null) existingFileUris.add(uri)
+            }
+            if (existingFileUris.size != savedFileUris.size)
+                saveFileUris(context, existingFileUris.toTypedArray())
+            if (existingFileUris.isNotEmpty())
+                fileUris = existingFileUris.toTypedArray()
+        }
+
+        if (customSoUri == null) {
+            val savedSoUri = (context.getPrefValue(PrefKey.CUSTOM_SO_URI) as String)
+                .takeIf { it.isNotEmpty() }
+                ?.let { Uri.parse(it) }
+            if (savedSoUri != null) {
+                val savedSoFileName = getFileName(context, savedSoUri)
+                if (savedSoFileName != null) {
+                    customSoUri = savedSoUri
+                    customSoFileName = savedSoFileName
+                } else {
+                    saveCustomSoUri(context, null)
+                }
+            }
+        }
+
+        stateLoaded = true
     }
+
+    LaunchedEffect(installMethodLoaded) {
+        if (!installMethodLoaded) return@LaunchedEffect
+        snapshotFlow { installMethod.intValue }
+            .drop(1)
+            .collectLatest { method ->
+                delay(INSTALL_METHOD_SAVE_DELAY_MILLIS)
+                saveInstallMethod(context, method)
+            }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (installMethodLoaded)
+                installMethodSaveScope.launch {
+                    saveInstallMethod(context, installMethod.intValue)
+                }
+        }
+    }
+
     val fileSelectLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val data = it.data ?: return@rememberLauncherForActivityResult
 
         val clipData = data.clipData
-        if (clipData != null) {
-            fileUris = Array(clipData.itemCount) { i ->
+        val newFileUris = if (clipData != null) {
+            Array(clipData.itemCount) { i ->
                 clipData.getItemAt(i).uri
             }
-            return@rememberLauncherForActivityResult
+        } else {
+            val uri = data.data ?: return@rememberLauncherForActivityResult
+            Array(1) { uri }
         }
 
-        val uri = data.data
-        if (uri != null) {
-            fileUris = Array(1) { uri }
-        }
+        for (uri in fileUris) releasePersistableUriPermission(context, uri)
+        for (uri in newFileUris) tryTakePersistableUriPermission(context, uri)
+        fileUris = newFileUris
+        coroutineScope.launch { saveFileUris(context, newFileUris) }
     }
-    // Read useLatestVersion from preferences
-    var useLatestVersion by remember { mutableStateOf(true) }
-    LaunchedEffect(true) {
-        useLatestVersion = context.getPrefValue(PrefKey.USE_LATEST_VERSION) as Boolean
-    }
-
-    var customSoUri by remember { mutableStateOf<Uri?>(null) }
-    var customSoFileName by remember { mutableStateOf<String?>(null) }
 
     // Custom .so file picker launcher (supports external file managers)
     val customSoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val uri = it.data?.data
-        if (uri != null) {
-            customSoUri = uri
-            val cursor = context.contentResolver.query(uri, null, null, null, null)
-            customSoFileName = cursor?.use {
-                if (it.moveToFirst()) {
-                    val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex >= 0) it.getString(nameIndex) else null
-                } else null
-            } ?: uri.lastPathSegment
+        val data = it.data ?: return@rememberLauncherForActivityResult
+
+        val clipData = data.clipData
+        val uri = when {
+            clipData == null -> data.data ?: return@rememberLauncherForActivityResult
+            clipData.itemCount == 1 -> clipData.getItemAt(0).uri
+            else -> {
+                customSoError = context.getString(R.string.custom_so_multiple_selected)
+                return@rememberLauncherForActivityResult
+            }
         }
+
+        val fileName = getFileName(context, uri)
+        if (fileName != null && !fileName.endsWith(".so", ignoreCase = true)) {
+            customSoError = context.getString(R.string.custom_so_not_so_file)
+            return@rememberLauncherForActivityResult
+        }
+
+        val oldSoUri = customSoUri
+        if (oldSoUri != null) releasePersistableUriPermission(context, oldSoUri)
+        tryTakePersistableUriPermission(context, uri)
+        customSoUri = uri
+        customSoFileName = fileName ?: uri.lastPathSegment
+        coroutineScope.launch { saveCustomSoUri(context, uri) }
     }
     val isShizukuAvailable by ShizukuState.isAvailable
 
@@ -148,11 +239,86 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
         }
     }
 
+    if (customSoError != null) {
+        SimpleOkCancelDialog(
+            title = stringResource(R.string.custom_so_invalid_selection),
+            onClose = { customSoError = null }
+        ) {
+            Text(customSoError!!)
+        }
+    }
+
+    if (deepLinkMissingFiles != null) {
+        SimpleOkCancelDialog(
+            title = stringResource(R.string.deep_link_missing_files),
+            onClose = { deepLinkMissingFiles = null }
+        ) {
+            Text(deepLinkMissingFiles!!)
+        }
+    }
+
+    fun startPatching() {
+        val isShizukuOptionSelected = installMethod.intValue == 3
+        if(!isShizukuAvailable && isShizukuOptionSelected) {
+            showShizukuNotAvailableDialog = true
+            return
+        }
+
+        if(isShizukuOptionSelected) {
+            if(Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
+                PatcherLauncher.launch(
+                    navigator,
+                    AppPatcher(
+                        fileUris,
+                        install = true,
+                        directInstall = false,
+                        shizukuInstall = true,
+                        customSoUri = if (!useLatestVersion) customSoUri else null
+                    )
+                )
+            }else if (Shizuku.shouldShowRequestPermissionRationale()) {
+                showShizukuRationaleDialog = true
+            }else {
+                Shizuku.requestPermission(MainActivity.SHIZUKU_PERMISSION_REQUEST_CODE)
+            }
+        }else {
+            PatcherLauncher.launch(
+                navigator,
+                AppPatcher(
+                    fileUris = if (installMethod.intValue == 2) arrayOf() else fileUris,
+                    install = installMethod.intValue == 1,
+                    directInstall = installMethod.intValue == 2,
+                    shizukuInstall = false,
+                    customSoUri = if (!useLatestVersion) customSoUri else null,
+                    mergeApks = mergeApksPref && installMethod.intValue == 0,
+                    legacyInstall = installMethod.intValue == 4
+                )
+            )
+        }
+    }
+
+    // umapatcher-edge://update deep link. start patching with the last selected files
+    val pendingUpdateDeepLink = MainActivity.pendingUpdateDeepLink
+    LaunchedEffect(pendingUpdateDeepLink, stateLoaded) {
+        if (!pendingUpdateDeepLink || !stateLoaded) return@LaunchedEffect
+
+        MainActivity.pendingUpdateDeepLink = false
+
+        val apksMissing = installMethod.intValue != 2 && fileUris.isEmpty()
+        val soMissing = !useLatestVersion && customSoUri == null
+        deepLinkMissingFiles = when {
+            apksMissing && soMissing -> context.getString(R.string.deep_link_missing_apks_and_so)
+            apksMissing -> context.getString(R.string.deep_link_missing_apks)
+            soMissing -> context.getString(R.string.deep_link_missing_so)
+            else -> null
+        }
+        if (deepLinkMissingFiles == null) startPatching()
+    }
+
     PatcherCard(
         label = stringResource(R.string.app_patcher_label),
         icon = { Icon(painterResource(R.drawable.ic_apk_install), null) },
         buttons = {
-            val isShizukuOptionSelected = installMethod.intValue == 3
             val isButtonEnabled = when {
                 !useLatestVersion && customSoUri == null -> false
                 installMethod.intValue == 2 -> true
@@ -161,44 +327,7 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
 
             Button(
                 enabled = isButtonEnabled,
-                onClick = {
-                    if(!isShizukuAvailable && isShizukuOptionSelected) {
-                        showShizukuNotAvailableDialog = true
-                        return@Button
-                    }
-
-                    if(isShizukuOptionSelected) {
-                        if(Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-                            PatcherLauncher.launch(
-                                navigator,
-                                AppPatcher(
-                                    fileUris,
-                                    install = true,
-                                    directInstall = false,
-                                    shizukuInstall = true,
-                                    customSoUri = if (!useLatestVersion) customSoUri else null
-                                )
-                            )
-                        }else if (Shizuku.shouldShowRequestPermissionRationale()) {
-                            showShizukuRationaleDialog = true
-                        }else {
-                            Shizuku.requestPermission(MainActivity.SHIZUKU_PERMISSION_REQUEST_CODE)
-                        }
-                    }else {
-                        PatcherLauncher.launch(
-                            navigator,
-                            AppPatcher(
-                                fileUris = if (installMethod.intValue == 2) arrayOf() else fileUris,
-                                install = installMethod.intValue == 1,
-                                directInstall = installMethod.intValue == 2,
-                                shizukuInstall = false,
-                                customSoUri = if (!useLatestVersion) customSoUri else null,
-                                mergeApks = mergeApksPref && installMethod.intValue == 0,
-                                legacyInstall = installMethod.intValue == 4
-                            )
-                        )
-                    }
-                }
+                onClick = { startPatching() }
             ) {
                 Text(stringResource(R.string.patch))
             }
@@ -330,5 +459,59 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                 }
             }
         }
+    }
+}
+
+private fun getFileName(context: Context, uri: Uri): String? {
+    val cursor = try {
+        context.contentResolver.query(uri, null, null, null, null)
+    } catch (_: Exception) {
+        return null
+    }
+    return cursor?.use {
+        if (it.moveToFirst()) {
+            val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+            if (nameIndex >= 0) it.getString(nameIndex) else uri.lastPathSegment
+        } else null
+    }
+}
+
+private fun tryTakePersistableUriPermission(context: Context, uri: Uri) {
+    try {
+        context.contentResolver.takePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+    } catch (_: SecurityException) {
+        // No persistable grant was offered for this URI
+    }
+}
+
+private fun releasePersistableUriPermission(context: Context, uri: Uri) {
+    try {
+        context.contentResolver.releasePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+    } catch (_: SecurityException) {
+        // No persisted permission was held for this URI
+    }
+}
+
+private suspend fun saveFileUris(context: Context, fileUris: Array<Uri>) {
+    context.dataStore.edit {
+        it[PrefKey.FILE_URIS] = fileUris.joinToString("\n") { uri -> uri.toString() }
+    }
+}
+
+private suspend fun saveCustomSoUri(context: Context, uri: Uri?) {
+    context.dataStore.edit {
+        it[PrefKey.CUSTOM_SO_URI] = uri?.toString() ?: ""
+    }
+}
+
+private suspend fun saveInstallMethod(context: Context, installMethod: Int) {
+    context.dataStore.edit {
+        it[PrefKey.INSTALL_METHOD] = installMethod
     }
 }

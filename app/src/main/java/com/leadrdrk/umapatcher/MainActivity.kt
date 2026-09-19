@@ -1,6 +1,7 @@
 package com.leadrdrk.umapatcher
 
 import android.os.Bundle
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val SHIZUKU_PERMISSION_REQUEST_CODE = 9975
         var onShizukuPermissionResult: ((grantResult: Int) -> Unit)? = null
+        var pendingUpdateDeepLink by mutableStateOf(false)
         init {
             Shell.enableVerboseLogging = BuildConfig.DEBUG
             Shell.setDefaultBuilder(Shell.Builder.create()
@@ -83,6 +85,8 @@ class MainActivity : ComponentActivity() {
 
         appInit()
 
+        checkDeepLink(intent)
+
         setContent {
             UmaPatcherTheme {
                 MainContent()
@@ -92,10 +96,22 @@ class MainActivity : ComponentActivity() {
         UpdateChecker.init(this)
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        checkDeepLink(intent)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Shizuku.removeRequestPermissionResultListener(shizukuPermissionListener)
         onShizukuPermissionResult = null
+    }
+
+    private fun checkDeepLink(intent: Intent?) {
+        val uri = intent?.data
+        if (uri?.scheme == "umapatcher-edge" && uri?.host == "update-hachimi") {
+            pendingUpdateDeepLink = true
+        }
     }
 
     private fun appInit() {
