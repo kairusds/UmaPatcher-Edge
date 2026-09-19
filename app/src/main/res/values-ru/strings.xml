@@ -135,6 +135,7 @@
     <string name="documents_provider_already_patched">Поставщик документов внутренних данных уже присутствует.</string>
     <string name="documents_provider_patch_failed">Не удалось добавить поставщик документов внутренних данных.</string>
     <string name="internal_files_marker_added">Метка директории внутренних данных добавлена.</string>
+    <string name="internal_files_marker_failed">Не удалось добавить метку директории внутренних данных.</string>
     <string name="insufficient_storage">Недостаточно свободного места для патча. Освободите хотя бы %s и повторите попытку.</string>
     <string name="apk_files_missing_lib">Неверные или неполные APK-файлы (отсутствуют нативные библиотеки)</string>
     <string name="app_lib_dir_not_found">Не удалось найти папку библиотек приложения. Ничего не было установлено.</string>

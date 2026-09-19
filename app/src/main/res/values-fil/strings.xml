@@ -157,6 +157,7 @@
     <string name="legacy_install_unknown_sources_info">Kinakailangan ng Android na ibigay ang pahintulot na "Mag-install ng di-kilalang app" ("Install unknown apps") bago nito mabuksan ang system package installer. Pindutin ang OK para buksan ang settings page at ibigay ang pahintulot para sa UmaPatcher Edge, at bumalik dito pagkatapos ibigay ang pahintulot.</string>
     <string name="legacy_install_failed">Nabigong buksan ang system package installer.</string>
     <string name="internal_files_marker_added">Dinagdag ang internal files directory marker.</string>
+    <string name="internal_files_marker_failed">Nabigong idagdag ang internal files directory marker.</string>
     <string name="insufficient_storage">Walang sapat na espasyo sa storage para mag-patch. Magbakante ng kahit %s at subukan ulit.</string>
 
     <!-- Deep link updater -->
