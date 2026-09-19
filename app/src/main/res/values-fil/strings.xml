@@ -20,6 +20,7 @@
     <string name="app_patcher_supported_files">Mga sinusuportahang file: APK / Split APKs, XAPK</string>
 
     <!-- Settings -->
+    <string name="check_for_updates_opt">Suriin para sa mga update</string>
     <string name="check_for_updates_desc">Tignan kung may update kapag simulan ang app</string>
     <string name="hachimi_repo">Hachimi Edge repo</string>
     <string name="export_signing_key">I-export ang signing key</string>
@@ -30,7 +31,7 @@
     <string name="keystore_imported">Na-import ang keystore</string>
     <string name="failed_to_import_keystore">Hindi ma-import ang keystore.</string>
     <string name="universal_signing_key">Universal na signing key</string>
-    <string name="universal_signing_key_desc">I-sign ang mga na-patch na APK gamit ang built-in na universal key sa halip ng isang per-device na BKS keystore. Hindi papansinin ang mga opsyon sa pag-import/pag-export ng signing key.\n\nBABALA: Lahat ng na-patch na APK ay magkakaroon ng parehong signing key kung ito ay naka-enable. Sinumang may ganitong key ay maaaring mag-sign ng mga malisyosong APK na mag-o-overwrite sa iyong app. Gamitin ito sa iyong sariling peligro.</string>
+    <string name="universal_signing_key_desc">Lagdaan ang mga na-patch na APK gamit ang built-in na universal key sa halip ng isang per-device na BKS keystore. Hindi papansinin ang mga opsyon sa pag-import/pag-export ng signing key.\n\nBABALA: Lahat ng na-patch na APK ay magkakaroon ng parehong signing key kung ito ay naka-enable. Sinumang may ganitong key ay maaaring maglagda ng mga malisyosong APK na mag-o-overwrite sa iyong app. Gamitin ito sa iyong sariling peligro.</string>
     <string name="signing_key_disabled_universal">Naka-disable dahil naka-enable ang universal signing key.</string>
     <string name="force_redownload_mod">Pwersahang i-redownload ang Hachimi</string>
     <string name="force_redownload_mod_desc">I-invalidate ang mga umiiral na libraries at pilitin silang i-redownloaded.</string>
@@ -57,6 +58,9 @@
     <string name="select_custom_so">I-tap dito para pumili ng Hachimi Edge .so file</string>
     <string name="no_custom_so_selected">Walang piniling file.</string>
     <string name="custom_so_supported_files">Mga sinusuportahang file: .so</string>
+    <string name="custom_so_invalid_selection">Di wastong pagpili ng .so file</string>
+    <string name="custom_so_multiple_selected">Isang .so file lang ang pwedeng piliin.</string>
+    <string name="custom_so_not_so_file">Hindi isang .so file and piniling file.</string>
     <string name="copying_custom_so">Kinokopya ang Hachimi Edge .so file</string>
     <string name="failed_to_read_custom_so">Hindi mabasa ang Hachimi Edge .so file.</string>
 
@@ -154,6 +158,12 @@
     <string name="legacy_install_failed">Nabigong buksan ang system package installer.</string>
     <string name="internal_files_marker_added">Dinagdag ang internal files directory marker.</string>
     <string name="insufficient_storage">Walang sapat na espasyo sa storage para mag-patch. Magbakante ng kahit %s at subukan ulit.</string>
+
+    <!-- Deep link updater -->
+    <string name="deep_link_missing_files">Nawawalang file</string>
+    <string name="deep_link_missing_apks">Piliin muna ang (mga) APK file na ipa-patch.</string>
+    <string name="deep_link_missing_so">Piliin muna ang Hachimi Edge .so file.</string>
+    <string name="deep_link_missing_apks_and_so">Piliin muna ang (mga) APK file at ang Hachimi Edge .so file.</string>
 
     <!-- Other -->
     <string name="cancel">Kanselahin</string>
