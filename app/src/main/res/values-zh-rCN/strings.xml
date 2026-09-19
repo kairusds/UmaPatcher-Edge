@@ -130,6 +130,24 @@
     <string name="merging_apks">正在合并拆分 APK</string>
     <string name="merge_no_base">在所选的安装包中未找到基础 APK，无法进行合并。</string>
     <string name="merge_failed">合并拆分 APK 失败：%s</string>
-    <string name="merge_sanitizing_manifest">正在清理合并后的Manifest</string>
-    <string name="merge_writing_apk">正在写入合并后的 APK</string>
+    <string name="merge_sanitizing_manifest">正在清理合并后的 Manifest</string>
+    <string name="merge_writing_apk">正在写入合并后的 APK</string>+
+    <string name="check_for_updates_opt">检查更新</string>
+    <string name="custom_so_invalid_selection">无效的 .so 文件选择</string>
+    <string name="custom_so_multiple_selected">只能选择一个 .so 文件。</string>
+    <string name="custom_so_not_so_file">所选文件不是 .so 文件。</string>
+    <string name="export_internal_data_provider">导出内部数据提供器</string>
+    <string name="export_internal_data_provider_desc">在补丁后的 APK 中添加文档提供器，允许文件管理器和其他应用访问其内部文件夹（/data/data）。</string>
+    <string name="use_internal_files_dir">使用内部文件目录</string>
+    <string name="use_internal_files_dir_desc">让 Hachimi Edge 使用游戏的内部数据目录（/data/data），而非旧版的 /Android/media 文件夹，从而获得更快的文件读写速度。\n\n缺点：内部文件夹（/data/data）只有在启用“导出内部数据提供器”或拥有 Root 权限时，才能通过文件管理器访问。\n\n若在 Android 16 QPR2+ 或 Android 17+ 上遇到错误 2，也必须启用此选项。</string>
+    <string name="patching_documents_provider">正在添加内部数据文档提供器</string>
+    <string name="documents_provider_patched">已添加内部数据文档提供器。</string>
+    <string name="documents_provider_already_patched">内部数据文档提供器已存在。</string>
+    <string name="documents_provider_patch_failed">添加内部数据文档提供器失败。</string>
+    <string name="internal_files_marker_added">已添加内部文件目录标记。</string>
+    <string name="insufficient_storage">存储空间不足，无法进行补丁。请至少释放 %s 空间后重试。</string>
+    <string name="deep_link_missing_files">缺少文件</string>
+    <string name="deep_link_missing_apks">请先选择要补丁的 APK 文件。</string>
+    <string name="deep_link_missing_so">请先选择 Hachimi Edge 的 .so 文件。</string>
+    <string name="deep_link_missing_apks_and_so">请先选择 APK 文件以及 Hachimi Edge 的 .so 文件。</string>
 </resources>
