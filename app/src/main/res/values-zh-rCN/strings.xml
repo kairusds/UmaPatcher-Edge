@@ -145,6 +145,7 @@
     <string name="documents_provider_already_patched">内部数据文档提供器已存在。</string>
     <string name="documents_provider_patch_failed">添加内部数据文档提供器失败。</string>
     <string name="internal_files_marker_added">已添加内部文件目录标记。</string>
+    <string name="internal_files_marker_failed">未能添加内部文件目录标记。</string>
     <string name="insufficient_storage">存储空间不足，无法进行补丁。请至少释放 %s 空间后重试。</string>
     <string name="deep_link_missing_files">缺少文件</string>
     <string name="deep_link_missing_apks">请先选择要补丁的 APK 文件。</string>
