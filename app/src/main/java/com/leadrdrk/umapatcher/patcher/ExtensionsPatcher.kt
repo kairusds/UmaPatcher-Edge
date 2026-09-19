@@ -12,7 +12,9 @@ internal object ExtensionsPatcher {
 
     const val DEX_ASSET_NAME = "extensions.dex"
 
-    private const val INTERNAL_FILES_MARKER_ASSET = "assets/hachimi_internal_files"
+    const val INTERNAL_FILES_MARKER_NAME = "hachimi_internal_files"
+
+    private const val INTERNAL_FILES_MARKER_ASSET = "assets/$INTERNAL_FILES_MARKER_NAME"
 
     private const val PROVIDER_CLASS_NAME = "com.leadrdrk.umapatcher.documentsprovider.InternalDataDocumentsProvider"
 

@@ -165,7 +165,29 @@ class AppPatcher(
             return false
         }
 
+        runBlocking { syncInternalFilesMarker(context, packageInfo) }
+
         return true
+    }
+
+    private suspend fun syncInternalFilesMarker(context: Context, packageInfo: PackageInfo) {
+        val dataDir = packageInfo.applicationInfo.dataDir ?: return
+        val marker = File(dataDir, "files").resolve(ExtensionsPatcher.INTERNAL_FILES_MARKER_NAME)
+
+        if (context.getPrefValue(PrefKey.USE_INTERNAL_FILES_DIR) as Boolean) {
+            if (RootUtils.testFile(marker.path)) return
+
+            if (RootUtils.createFile(marker.path).isSuccess) {
+                val uid = packageInfo.applicationInfo.uid.toString()
+                RootUtils.chown(marker.path, "$uid:$uid")
+                RootUtils.chmod(marker.path, "644")
+                log(context.getString(R.string.internal_files_marker_added))
+            } else {
+                log(context.getString(R.string.internal_files_marker_failed))
+            }
+        } else if (RootUtils.testFile(marker.path)) {
+            RootUtils.removeFile(marker.path)
+        }
     }
 
     private fun installModLib(modLib: File, libDir: File): Boolean {

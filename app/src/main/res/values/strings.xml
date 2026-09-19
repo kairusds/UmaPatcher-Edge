@@ -136,6 +136,7 @@
     <string name="documents_provider_already_patched">Internal data documents provider is already present.</string>
     <string name="documents_provider_patch_failed">Failed to add internal data documents provider.</string>
     <string name="internal_files_marker_added">Internal files directory marker added.</string>
+    <string name="internal_files_marker_failed">Failed to add the internal files directory marker.</string>
     <string name="insufficient_storage">Not enough storage space to patch. Free up at least %s and try again.</string>
     <string name="apk_files_missing_lib">Invalid or incomplete APK files (missing native libraries)</string>
     <string name="app_lib_dir_not_found">No app lib directory was found. Nothing has been installed.</string>
