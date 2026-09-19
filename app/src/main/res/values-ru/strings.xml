@@ -57,6 +57,9 @@
     <string name="select_custom_so">Нажмите, чтобы выбрать .so-файл Hachimi Edge</string>
     <string name="no_custom_so_selected">Файл не выбран</string>
     <string name="custom_so_supported_files">Поддерживаемые файлы: .so</string>
+    <string name="custom_so_invalid_selection">Неверно выбран .so-файл</string>
+    <string name="custom_so_multiple_selected">Только один .so-файл может быть выбран.</string>
+    <string name="custom_so_not_so_file">Выбранный файл не является .so-файлом.</string>
     <string name="copying_custom_so">Копирование .so-файла Hachimi Edge</string>
     <string name="failed_to_read_custom_so">Не удалось прочитать .so-файл Hachimi Edge.</string>
 
@@ -159,6 +162,12 @@
     <string name="shizuku_install_fail">Установка через Shizuku не удалась: %s</string>
     <string name="shizuku_install_error">Установка через Shizuku завершилась с исключением: %s</string>
     <string name="shizuku_install_fail_unexpected">Служба неожиданно отключилась.</string>
+
+    <!-- Deep link updater -->
+    <string name="deep_link_missing_files">Отсуствуют файлы</string>
+    <string name="deep_link_missing_apks">Сначала выберите APK-файл(ы), которые надо пропатчить.</string>
+    <string name="deep_link_missing_so">Сначала выберите .so-файл Hachimi Edge.</string>
+    <string name="deep_link_missing_apks_and_so">Сначала выберите APK-файл(ы) и .so-файл Hachimi Edge.</string>
 
     <!-- Other -->
     <string name="cancel">Отмена</string>
