@@ -165,6 +165,9 @@
     <string name="deep_link_missing_apks">Piliin muna ang (mga) APK file na ipa-patch.</string>
     <string name="deep_link_missing_so">Piliin muna ang Hachimi Edge .so file.</string>
     <string name="deep_link_missing_apks_and_so">Piliin muna ang (mga) APK file at ang Hachimi Edge .so file.</string>
+    <string name="selected_files_no_longer_available">Hindi na available ang ilan sa mga piniling file. Piliin ang (mga) APK file ulit.</string>
+    <string name="selected_so_no_longer_available">Hindi na available ang piniling .so file. Piliin ito ulit.</string> 
+
 
     <!-- Other -->
     <string name="cancel">Kanselahin</string>

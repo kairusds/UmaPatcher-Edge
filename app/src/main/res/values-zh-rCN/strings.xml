@@ -151,4 +151,6 @@
     <string name="deep_link_missing_apks">请先选择要补丁的 APK 文件。</string>
     <string name="deep_link_missing_so">请先选择 Hachimi Edge 的 .so 文件。</string>
     <string name="deep_link_missing_apks_and_so">请先选择 APK 文件以及 Hachimi Edge 的 .so 文件。</string>
+    <string name="selected_files_no_longer_available">选择的部分文件已不再可用，请重新选择 APK 文件。</string>
+    <string name="selected_so_no_longer_available">选择的 .so 文件已不再可用，请重新选择。</string>
 </resources>

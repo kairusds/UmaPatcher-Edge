@@ -169,6 +169,9 @@
     <string name="deep_link_missing_apks">Сначала выберите APK-файл(ы), которые надо пропатчить.</string>
     <string name="deep_link_missing_so">Сначала выберите .so-файл Hachimi Edge.</string>
     <string name="deep_link_missing_apks_and_so">Сначала выберите APK-файл(ы) и .so-файл Hachimi Edge.</string>
+    <string name="selected_files_no_longer_available">Некоторые из выбранных файлов больше не доступны. Пожалуйста, выберите APK-файл(ы) заново.</string>
+    <string name="selected_so_no_longer_available">Выбранный .so-файл больше не доступен. Пожалуйста, выберите его заново.</string>
+    
 
     <!-- Other -->
     <string name="cancel">Отмена</string>
@@ -177,4 +180,5 @@
     <string name="update_available_desc">Доступна новая версия: %s\nОткрыть страницу загрузки?</string>
     <string name="failed_to_check_for_updates">Не удалось проверить обновления</string>
     <string name="no_updates_available">Нет доступных обновлений</string>
+    
 </resources>
