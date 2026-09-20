@@ -22,10 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -56,30 +56,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
-private const val MAX_LOG_LINES = 200
-
 @Destination
 @Composable
 fun PatchingScreen(navigator: DestinationsNavigator) {
     val workingStr = stringResource(R.string.working)
     val completedStr = stringResource(R.string.completed)
 
-    val log = remember { mutableStateListOf<String>() }
-    var currentTask by remember { mutableStateOf(workingStr) }
-    var progress by remember { mutableFloatStateOf(-1f) }
-    var completed by remember { mutableStateOf(false) }
+    val log = PatcherLauncher.logEntries
+    val currentTask = PatcherLauncher.task.ifEmpty { workingStr }
+    val progress = PatcherLauncher.progress
+    val completed = PatcherLauncher.completed
     val context = LocalContext.current
 
-    // Patcher callbacks
-    fun onLog(line: String) {
-        log.add(line)
-        if (log.size > MAX_LOG_LINES)
-            log.removeRange(0, log.size - MAX_LOG_LINES)
-    }
-    fun onProgress(p: Float) { progress = p }
-    fun onTask(task: String) {
-        currentTask = task
-        log.add("-- $task")
+    val view = LocalView.current
+    DisposableEffect(Unit) {
+        view.keepScreenOn = true
+        onDispose { view.keepScreenOn = false }
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -103,16 +95,16 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
 
                 val file = sfFile!!
                 val length = file.length().toFloat()
-                onTask(context.getString(R.string.copying_file_name).format(file.name))
-                progress = 0f
+                PatcherLauncher.onTask(context.getString(R.string.copying_file_name).format(file.name))
+                PatcherLauncher.progress = 0f
                 file.inputStream().use { input ->
                     input.copyTo(output) { current ->
-                        progress = current / length
+                        PatcherLauncher.progress = current / length
                     }
                 }
             }
             sfCallback(true)
-            currentTask = completedStr
+            PatcherLauncher.task = completedStr
             sfFile = null
         }
     }
@@ -211,44 +203,28 @@ fun PatchingScreen(navigator: DestinationsNavigator) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
     BackHandler {
-        if (completed && sfFile == null && legacyFile == null) {
+        if ((completed || PatcherLauncher.patcher == null) && sfFile == null && legacyFile == null) {
             safeNavigate(lifecycleOwner) {
                 navigator.popBackStack()
             }
         }
     }
 
-    val patchSuccessMsg = stringResource(R.string.patch_success_msg)
-    val patchFailedMsg = stringResource(R.string.patch_failed_msg)
-
     LaunchedEffect(true) {
-        if (PatcherLauncher.patching) return@LaunchedEffect
-        val patcher = PatcherLauncher.patcher!!
-        patcher.setCallbacks(
-            onLog = ::onLog,
-            onProgress = ::onProgress,
-            onTask = ::onTask,
+        val patcher = PatcherLauncher.patcher ?: return@LaunchedEffect
+        PatcherLauncher.attachCallbacks(
             onSaveFile = ::onSaveFile,
             onInstallLegacy = ::onInstallLegacy
         )
-        PatcherLauncher.runPatcher(context) { success ->
-            completed = true
-            log.add(if (success) patchSuccessMsg else patchFailedMsg)
-            progress = 1f
-        }
-    }
-
-    LaunchedEffect(completed) {
-        if (completed) {
-            currentTask = completedStr
-        }
+        if (PatcherLauncher.patching || PatcherLauncher.completed) return@LaunchedEffect
+        PatcherLauncher.runPatcher(context)
     }
 
     Scaffold(
         topBar = {
             TopBar(
                 title = if (completed) completedStr else workingStr,
-                navigationIcon = { BackButton(navigator, enabled = completed && sfFile == null && legacyFile == null) }
+                navigationIcon = { BackButton(navigator, enabled = (completed || PatcherLauncher.patcher == null) && sfFile == null && legacyFile == null) }
             )
         }
     ) { innerPadding ->

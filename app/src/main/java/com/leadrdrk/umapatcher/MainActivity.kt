@@ -41,6 +41,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.leadrdrk.umapatcher.core.GameChecker
 import com.leadrdrk.umapatcher.core.UpdateChecker
 import com.leadrdrk.umapatcher.ui.component.SimpleOkCancelDialog
+import com.leadrdrk.umapatcher.ui.patcher.PatcherLauncher
 import com.leadrdrk.umapatcher.ui.screen.BottomBarDestination
 import com.leadrdrk.umapatcher.ui.screen.NavGraphs
 import com.leadrdrk.umapatcher.ui.screen.destinations.PatchingScreenDestination
@@ -117,9 +118,10 @@ class MainActivity : ComponentActivity() {
     private fun appInit() {
         GameChecker.init(packageManager)
 
-        // Init work directory
-        workDir.mkdir()
-        deleteRecursive(workDir, deleteRoot = false)
+        if (!PatcherLauncher.patching) {
+            workDir.mkdir()
+            deleteRecursive(workDir, deleteRoot = false)
+        }
 
         // Remove legacy repo directory (if it exists)
         deleteRecursive(repoDir, deleteRoot = true)

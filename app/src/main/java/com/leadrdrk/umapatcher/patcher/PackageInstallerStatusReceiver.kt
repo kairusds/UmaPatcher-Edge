@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInstaller
 import androidx.core.content.IntentCompat
+import com.leadrdrk.umapatcher.R
+import com.leadrdrk.umapatcher.ui.patcher.PatcherLauncher
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -26,6 +28,9 @@ class PackageInstallerStatusReceiver : BroadcastReceiver() {
                 contList.clear()
             }
             else -> {
+                val statusMessage = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
+                if (!statusMessage.isNullOrEmpty())
+                    PatcherLauncher.log(context.getString(R.string.install_failed) + ": $statusMessage")
                 contList.forEach { it.resume(false) }
                 contList.clear()
             }

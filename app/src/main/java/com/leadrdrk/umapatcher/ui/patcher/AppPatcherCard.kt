@@ -100,7 +100,11 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                 .map { uri -> Uri.parse(uri) }
             val existingFileUris = mutableListOf<Uri>()
             for (uri in savedFileUris) {
-                if (getFileName(context, uri) != null) existingFileUris.add(uri)
+                if (getFileName(context, uri) != null && canOpenUri(context, uri)) {
+                    existingFileUris.add(uri)
+                } else {
+                    releasePersistableUriPermission(context, uri)
+                }
             }
             if (existingFileUris.size != savedFileUris.size)
                 saveFileUris(context, existingFileUris.toTypedArray())
@@ -114,10 +118,11 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
                 ?.let { Uri.parse(it) }
             if (savedSoUri != null) {
                 val savedSoFileName = getFileName(context, savedSoUri)
-                if (savedSoFileName != null) {
+                if (savedSoFileName != null && canOpenUri(context, savedSoUri)) {
                     customSoUri = savedSoUri
                     customSoFileName = savedSoFileName
                 } else {
+                    releasePersistableUriPermission(context, savedSoUri)
                     saveCustomSoUri(context, null)
                 }
             }
@@ -258,6 +263,25 @@ fun AppPatcherCard(navigator: DestinationsNavigator) {
     }
 
     fun startPatching() {
+        if (installMethod.intValue != 2 && fileUris.isNotEmpty()) {
+            val (aliveUris, deadUris) = fileUris.partition { canOpenUri(context, it) }
+            if (deadUris.isNotEmpty()) {
+                for (uri in deadUris) releasePersistableUriPermission(context, uri)
+                fileUris = aliveUris.toTypedArray()
+                coroutineScope.launch { saveFileUris(context, aliveUris.toTypedArray()) }
+                deepLinkMissingFiles = context.getString(R.string.selected_files_no_longer_available)
+                return
+            }
+        }
+        if (!useLatestVersion && customSoUri != null && !canOpenUri(context, customSoUri!!)) {
+            releasePersistableUriPermission(context, customSoUri!!)
+            customSoUri = null
+            customSoFileName = null
+            coroutineScope.launch { saveCustomSoUri(context, null) }
+            customSoError = context.getString(R.string.selected_so_no_longer_available)
+            return
+        }
+
         val isShizukuOptionSelected = installMethod.intValue == 3
         if(!isShizukuAvailable && isShizukuOptionSelected) {
             showShizukuNotAvailableDialog = true
@@ -473,6 +497,14 @@ private fun getFileName(context: Context, uri: Uri): String? {
             val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
             if (nameIndex >= 0) it.getString(nameIndex) else uri.lastPathSegment
         } else null
+    }
+}
+
+private fun canOpenUri(context: Context, uri: Uri): Boolean {
+    return try {
+        context.contentResolver.openInputStream(uri)?.use { it.read() } != null
+    } catch (_: Exception) {
+        false
     }
 }
 

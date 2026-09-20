@@ -136,7 +136,7 @@
     <string name="documents_provider_already_patched">Internal data documents provider is already present.</string>
     <string name="documents_provider_patch_failed">Failed to add internal data documents provider.</string>
     <string name="internal_files_marker_added">Internal files directory marker added.</string>
-    <string name="internal_files_marker_failed">Failed to add the internal files directory marker.</string>
+    <string name="internal_files_marker_failed">Failed to add the internal files directory marker: %1$s</string>
     <string name="insufficient_storage">Not enough storage space to patch. Free up at least %s and try again.</string>
     <string name="apk_files_missing_lib">Invalid or incomplete APK files (missing native libraries)</string>
     <string name="app_lib_dir_not_found">No app lib directory was found. Nothing has been installed.</string>
@@ -170,6 +170,8 @@
     <string name="deep_link_missing_apks">Select the APK file(s) to patch first.</string>
     <string name="deep_link_missing_so">Select the Hachimi Edge .so file first.</string>
     <string name="deep_link_missing_apks_and_so">Select the APK file(s) and the Hachimi Edge .so file first.</string>
+    <string name="selected_files_no_longer_available">Some of the selected files are no longer available. Please select the APK file(s) again.</string>
+    <string name="selected_so_no_longer_available">The selected .so file is no longer available. Please select it again.</string>
 
     <!-- Other -->
     <string name="cancel">Cancel</string>
